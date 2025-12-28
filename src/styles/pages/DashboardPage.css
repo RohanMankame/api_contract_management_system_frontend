@@ -1,0 +1,38 @@
+@import '../colors.css';
+@import '../typography.css';
+
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 100vw;
+  background: var(--color-bg-light);
+}
+
+.dashboard-container {
+  flex: 1;
+  padding: 40px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.dashboard-container h2 {
+  margin: 0 0 8px;
+}
+
+.dashboard-container p {
+  margin: 0 0 32px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-gray);
+}
+
+@media (max-width: 640px) {
+  .dashboard-container {
+    padding: 20px;
+  }
+
+  .dashboard-container h2 {
+    font-size: var(--font-size-2xl);
+  }
+}
