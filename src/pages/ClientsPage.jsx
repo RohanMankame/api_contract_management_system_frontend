@@ -93,6 +93,7 @@ export function ClientsPage() {
             <div>
               <h2>Clients</h2>
               <p>Manage your API clients and integrations</p>
+              <p>Double click a client to edit or delete it.</p>
             </div>
             <button onClick={() => setShowAddModal(true)} className="btn-add-client">
               + Add Client

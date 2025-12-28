@@ -147,6 +147,7 @@ export function ContractsPage() {
             <div>
               <h2>Contracts</h2>
               <p>Manage your API contracts and agreements</p>
+              <p>Double click a contract to edit or delete it.</p>
             </div>
             <button onClick={() => setShowAddModal(true)} className="btn-add-contract">
               + Add Contract

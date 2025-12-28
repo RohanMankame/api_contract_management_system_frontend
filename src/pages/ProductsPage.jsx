@@ -89,7 +89,8 @@ export function ProductsPage() {
           <div className="products-header-top">
             <div>
               <h2>Products</h2>
-              <p>Manage your API products and versions</p>
+              <p>Manage your API products</p>
+              <p>Double click a product to edit or delete it.</p>
             </div>
             <button onClick={() => setShowAddModal(true)} className="btn-add-product">
               + Add Product
