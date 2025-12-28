@@ -1,18 +1,10 @@
 @import '../colors.css';
 @import '../typography.css';
 
-.dashboard-page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  min-width: 100vw;
-  background: var(--color-bg-light);
-}
-
 .dashboard-container {
-  flex: 1;
   padding: 40px;
   max-width: 1400px;
+  
   width: 100%;
   margin: 0 auto;
 }

@@ -23,6 +23,11 @@ function App() {
             }
           />
 
+          {/* Placeholder routes - will build pages later */}
+          <Route path="/products" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route path="/clients" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route path="/contracts" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+
           {/* Default redirect */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
