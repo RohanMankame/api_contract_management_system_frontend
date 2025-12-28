@@ -1,3 +1,4 @@
+/* src/styles/components/EditEntityModal.css */
 @import '../colors.css';
 @import '../typography.css';
 
@@ -93,7 +94,8 @@
 .form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="number"],
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   padding: 10px 12px;
   border: 1px solid var(--color-border-light);
   border-radius: 6px;
@@ -107,7 +109,8 @@
 .form-group input[type="text"]:focus,
 .form-group input[type="email"]:focus,
 .form-group input[type="number"]:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
@@ -117,6 +120,7 @@
   display: flex;
   gap: 12px;
   justify-content: space-between;
+  align-items: center;
   padding: 24px;
   border-top: 1px solid var(--color-border-light);
 }
@@ -129,7 +133,7 @@
 .btn-cancel,
 .btn-submit,
 .btn-delete,
-.btn-delete-secondary {
+.btn-delete-modal {
   padding: 10px 20px;
   border-radius: 6px;
   font-size: var(--font-size-sm);
@@ -158,26 +162,30 @@
 }
 
 .btn-submit:disabled,
-.btn-delete:disabled {
+.btn-delete:disabled,
+.btn-delete-modal:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.btn-delete-secondary {
-  background: #f5f5f5;
-  color: #d32f2f;
-  border: 1px solid #ffcdd2;
-}
-
-.btn-delete-secondary:hover {
-  background: #ffebee;
-}
-
-.btn-delete {
+.btn-delete,
+.btn-delete-modal {
   background: #d32f2f;
   color: white;
 }
 
-.btn-delete:hover:not(:disabled) {
+.btn-delete:hover:not(:disabled),
+.btn-delete-modal:hover:not(:disabled) {
   background: #b71c1c;
+}
+
+.modal-error-message {
+  background: #ffebee;
+  border: 1px solid #ef5350;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 0 24px 16px 24px;
+  color: #d32f2f;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
 }

@@ -1,4 +1,3 @@
-// src/pages/ContractDetailsPage.jsx
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/PageLayout';
@@ -134,6 +133,34 @@ export function ContractDetailsPage() {
     }
   };
 
+  const handleEditSubscription = async (subscriptionId, formData) => {
+    try {
+      const dataToSubmit = {
+        product_id: formData.product_id,
+        pricing_type: formData.pricing_type,
+        strategy: formData.strategy
+      };
+
+      await put(`/subscriptions/${subscriptionId}`, dataToSubmit);
+      
+      // Reload the contract data to get updated subscriptions
+      await loadContractData();
+    } catch (err) {
+      console.error('Error updating subscription:', err);
+    }
+  };
+
+  const handleDeleteSubscription = async (subscriptionId) => {
+    try {
+      await deleteRequest(`/subscriptions/${subscriptionId}`);
+      
+      // Reload the contract data to get updated subscriptions
+      await loadContractData();
+    } catch (err) {
+      console.error('Error deleting subscription:', err);
+    }
+  };
+
   if (isLoading) {
     return (
       <PageLayout>
@@ -178,6 +205,8 @@ export function ContractDetailsPage() {
           onToggleExpand={toggleSubscriptionExpanded}
           products={products}
           onAddSubscription={handleAddSubscription}
+          onEditSubscription={handleEditSubscription}
+          onDeleteSubscription={handleDeleteSubscription}
         />
       </div>
     </PageLayout>

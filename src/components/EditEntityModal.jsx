@@ -1,7 +1,8 @@
+// src/components/EditEntityModal.jsx
 import { useState, useEffect } from 'react';
 import '../styles/components/EditEntityModal.css';
 
-export function EditEntityModal({ isOpen, title, fields, data, onSubmit, onDelete, onClose }) {
+export function EditEntityModal({ isOpen, title, fields, data, onSubmit, onDelete, onClose, error }) {
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -56,25 +57,34 @@ export function EditEntityModal({ isOpen, title, fields, data, onSubmit, onDelet
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
         
+        {error && (
+          <div className="modal-error-message">
+            {error}
+          </div>
+        )}
+
         {showDeleteConfirm ? (
           <div className="modal-delete-confirm">
             <p>Are you sure you want to archive this item? </p>
             <div className="modal-footer">
-              <button 
-                type="button" 
-                onClick={() => setShowDeleteConfirm(false)} 
-                className="btn-cancel"
-              >
-                Cancel
-              </button>
-              <button 
-                type="button" 
-                onClick={handleDelete} 
-                disabled={isSubmitting}
-                className="btn-delete"
-              >
-                {isSubmitting ? 'Deleting...' : 'Delete'}
-              </button>
+              <div></div>
+              <div className="modal-footer-right">
+                <button 
+                  type="button" 
+                  onClick={() => setShowDeleteConfirm(false)} 
+                  className="btn-cancel"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  onClick={handleDelete} 
+                  disabled={isSubmitting}
+                  className="btn-delete"
+                >
+                  {isSubmitting ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
             </div>
           </div>
         ) : (
@@ -92,6 +102,21 @@ export function EditEntityModal({ isOpen, title, fields, data, onSubmit, onDelet
                       required={field.required}
                       rows="4"
                     />
+                  ) : field.type === 'select' ? (
+                    <select
+                      id={field.name}
+                      name={field.name}
+                      value={formData[field.name] || ''}
+                      onChange={handleChange}
+                      required={field.required}
+                    >
+                      <option value="">Select {field.label}</option>
+                      {field.options?.map(opt => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
                   ) : field.type === 'checkbox' ? (
                     <input
                       type="checkbox"
@@ -114,19 +139,21 @@ export function EditEntityModal({ isOpen, title, fields, data, onSubmit, onDelet
               ))}
               
               <div className="modal-footer">
-                <button 
-                  type="button" 
-                  onClick={() => setShowDeleteConfirm(true)} 
-                  className="btn-delete-secondary"
-                >
-                  Delete
-                </button>
+                {onDelete && (
+                  <button 
+                    type="button" 
+                    onClick={() => setShowDeleteConfirm(true)} 
+                    className="btn-delete-modal"
+                  >
+                    Delete
+                  </button>
+                )}
                 <div className="modal-footer-right">
                   <button type="button" onClick={onClose} className="btn-cancel">
                     Cancel
                   </button>
                   <button type="submit" disabled={isSubmitting} className="btn-submit">
-                    {isSubmitting ? 'Updating...' : 'Update'}
+                    {isSubmitting ? 'Saving...' : 'Submit'}
                   </button>
                 </div>
               </div>

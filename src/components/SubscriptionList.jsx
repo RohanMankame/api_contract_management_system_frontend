@@ -1,3 +1,4 @@
+// src/components/SubscriptionList.jsx
 import React, { useState } from 'react';
 import { SubscriptionItem } from './SubscriptionItem';
 import { EntityModal } from './EntityModal';
@@ -7,7 +8,9 @@ export function SubscriptionList({
   expandedSubscriptions, 
   onToggleExpand,
   products,
-  onAddSubscription
+  onAddSubscription,
+  onEditSubscription,
+  onDeleteSubscription
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -74,6 +77,8 @@ export function SubscriptionList({
                 isExpanded={expandedSubscriptions.has(subscription.id)}
                 onToggleExpand={onToggleExpand}
                 products={products}
+                onEditSubscription={onEditSubscription}
+                onDeleteSubscription={onDeleteSubscription}
               />
             ))
           ) : (
