@@ -47,6 +47,21 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
                   required={field.required}
                   rows="4"
                 />
+              ) : field.type === 'select' ? (
+                <select
+                  id={field.name}
+                  name={field.name}
+                  value={formData[field.name] || ''}
+                  onChange={handleChange}
+                  required={field.required}
+                >
+                  <option value="">Select {field.label}</option>
+                  {field.options?.map(opt => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
               ) : field.type === 'checkbox' ? (
                 <input
                   type="checkbox"
