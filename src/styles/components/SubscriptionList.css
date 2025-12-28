@@ -1,0 +1,57 @@
+/* src/styles/components/SubscriptionList.css */
+@import '../colors.css';
+@import '../typography.css';
+
+.subscriptions-section {
+  margin-bottom: 40px;
+}
+
+.subscriptions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.subscriptions-header h2 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+}
+
+.btn-add-subscription {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add-subscription:hover {
+  background: #229d4e;
+}
+
+.subscriptions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.no-subscriptions {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--color-text-gray);
+  background: var(--color-bg-white);
+  border: 1px dashed var(--color-border-light);
+  border-radius: 8px;
+}
+
+.no-subscriptions p {
+  margin: 0;
+  font-size: var(--font-size-base);
+}
