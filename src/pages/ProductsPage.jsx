@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PageLayout } from '../components/PageLayout';
 import { DataTable } from '../components/DataTable';
 import { useApi } from '../hooks/useApi';
@@ -6,6 +6,8 @@ import '../styles/pages/ProductsPage.css';
 
 export function ProductsPage() {
   const { data: response, isLoading, error, get } = useApi();
+  const gridApiRef = useRef(null);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     get('/products');
@@ -22,14 +24,36 @@ export function ProductsPage() {
     { field: 'created_at', headerName: 'Created', flex: 1 },
   ];
 
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchText(value);
+    if (gridApiRef.current) {
+      gridApiRef.current.setGridOption('quickFilterText', value);
+    }
+  };
+
+  const handleGridReady = (params) => {
+    gridApiRef.current = params.api;
+  };
+
   return (
     <PageLayout>
       <div className="products-container">
         <div className="products-header">
           <h2>Products</h2>
           <p>Manage your API products and versions</p>
+          <div className="products-search">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchText}
+              onChange={handleSearch}
+              className="search-input"
+            />
+          </div>
         </div>
         <DataTable 
+          onGridReady={handleGridReady}
           data={products} 
           isLoading={isLoading} 
           error={error}

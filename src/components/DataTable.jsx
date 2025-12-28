@@ -12,7 +12,8 @@ export function DataTable({
   error, 
   columnDefs,
   paginationPageSize = 20,
-  className = ''
+  className = '',
+  onGridReady
 }) {
   if (isLoading) return <div className="data-table-loading">Loading...</div>;
   if (error) return <div className="data-table-error">Error: {error}</div>;
@@ -22,13 +23,15 @@ export function DataTable({
   return (
     <div className={`data-table-container ${className}`}>
       <AgGridReact
+        onGridReady={onGridReady}
         rowData={rowData}
         columnDefs={columnDefs}
         theme={themeQuartz}
         pagination={true}
         paginationPageSize={paginationPageSize}
-        paginationPageSizeSelector={[5,10, 20, 50]}
+        paginationPageSizeSelector={[10, 20, 50, 100]}
         suppressMovableColumns={false}
+        quickFilterText=""
         defaultColDef={{
           sortable: true,
           filter: true,
