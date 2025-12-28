@@ -13,11 +13,12 @@ import '../styles/components/SubscriptionItem.css';
 export function ContractDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: response, isLoading, error, get, put, delete: deleteRequest } = useApi();
+  const { data: response, isLoading, error, get, put, post, delete: deleteRequest } = useApi();
   const [contract, setContract] = useState(null);
   const [subscriptions, setSubscriptions] = useState([]);
   const [expandedSubscriptions, setExpandedSubscriptions] = useState(new Set());
   const [clients, setClients] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const extractContractData = (response) => {
     if (response && response.data && response.data.contract) {
@@ -30,6 +31,17 @@ export function ContractDetailsPage() {
     return null;
   };
 
+  const extractProductsData = (response) => {
+    if (response && response.data && Array.isArray(response.data.products)) {
+      return response.data.products;
+    } else if (response && Array.isArray(response.products)) {
+      return response.products;
+    } else if (Array.isArray(response)) {
+      return response;
+    }
+    return [];
+  };
+
   const loadContractData = async () => {
     try {
       // Fetch clients for dropdown
@@ -39,6 +51,11 @@ export function ContractDetailsPage() {
         clientsData = clientsResponse.data.clients;
       }
       setClients(clientsData);
+
+      // Fetch products for subscription dropdown
+      const productsResponse = await get('/products');
+      const productsData = extractProductsData(productsResponse);
+      setProducts(productsData);
 
       // Fetch contract details
       const contractResponse = await get(`/contracts/${id}`);
@@ -99,6 +116,24 @@ export function ContractDetailsPage() {
     }
   };
 
+  const handleAddSubscription = async (formData) => {
+    try {
+      const dataToSubmit = {
+        contract_id: id,
+        product_id: formData.product_id,
+        pricing_type: formData.pricing_type,
+        strategy: formData.strategy
+      };
+
+      await post('/subscriptions', dataToSubmit);
+      
+      // Reload the contract data to get updated subscriptions
+      await loadContractData();
+    } catch (err) {
+      console.error('Error adding subscription:', err);
+    }
+  };
+
   if (isLoading) {
     return (
       <PageLayout>
@@ -141,6 +176,8 @@ export function ContractDetailsPage() {
           subscriptions={subscriptions}
           expandedSubscriptions={expandedSubscriptions}
           onToggleExpand={toggleSubscriptionExpanded}
+          products={products}
+          onAddSubscription={handleAddSubscription}
         />
       </div>
     </PageLayout>

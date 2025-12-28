@@ -1,7 +1,12 @@
-// src/components/SubscriptionItem.jsx
 import React from 'react';
 
-export function SubscriptionItem({ subscription, isExpanded, onToggleExpand }) {
+export function SubscriptionItem({ subscription, isExpanded, onToggleExpand, products }) {
+  // get the product name from products list to display
+  const getProductName = (productId) => {
+    const product = products.find(p => p.id === productId);
+    return product ? product.api_name : productId;
+  };
+
   return (
     <div className="subscription-container">
       <div 
@@ -12,8 +17,10 @@ export function SubscriptionItem({ subscription, isExpanded, onToggleExpand }) {
           <span className={`expand-icon ${isExpanded ? 'expanded' : ''}`}>
             ▼
           </span>
-          <h3>Subscription {subscription.id.slice(0, 8)}...</h3>
-          <span className="subscription-meta">Product: {subscription.product_id}</span>
+          <div className="subscription-title-content">
+            <h3>Subscription {subscription.id}</h3>
+            <span className="subscription-product-name">{getProductName(subscription.product_id)}</span>
+          </div>
         </div>
         <span className="subscription-pricing">
           {subscription.pricing_type}

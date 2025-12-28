@@ -25,9 +25,15 @@
 
 .subscription-title-section {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   flex: 1;
+}
+
+.subscription-title-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .expand-icon {
@@ -47,6 +53,15 @@
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-dark);
+}
+
+.subscription-product-name {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-gray);
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 4px;
+  width: fit-content;
 }
 
 .subscription-meta {
