@@ -3,6 +3,9 @@ import { AuthProvider } from './context/AuthProvider';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { ProductsPage } from './pages/ProductsPage';
+import { ClientsPage } from './pages/ClientsPage';
+import { ContractsPage } from './pages/ContractsPage';
 import './styles/App.css';
 
 function App() {
@@ -22,11 +25,30 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* Placeholder routes - will build pages later */}
-          <Route path="/products" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/clients" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/contracts" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route
+            path="/products"
+            element={
+              <ProtectedRoute>
+                <ProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/clients"
+            element={
+              <ProtectedRoute>
+                <ClientsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/contracts"
+            element={
+              <ProtectedRoute>
+                <ContractsPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Default redirect */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
