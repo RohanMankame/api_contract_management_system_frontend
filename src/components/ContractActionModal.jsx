@@ -61,7 +61,7 @@ export function ContractActionModal({ isOpen, contract, onEdit, onDelete, onClos
             
             <div className="action-buttons">
               <button onClick={onEdit} className="btn-action btn-edit">
-                Edit Contract
+                View/Edit Contract
               </button>
               <button 
                 onClick={() => setShowDeleteConfirm(true)} 

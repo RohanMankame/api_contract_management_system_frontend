@@ -260,7 +260,7 @@ export function ContractDetailsPage() {
               ))
             ) : (
               <div className="no-subscriptions">
-                <p>No subscriptions yet. Add one to get started.</p>
+                <p>No subscriptions yet.</p>
               </div>
             )}
           </div>
