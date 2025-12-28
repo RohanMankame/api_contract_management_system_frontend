@@ -1,0 +1,33 @@
+@import '../colors.css';
+@import '../typography.css';
+
+.products-container {
+  padding: 40px;
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.products-header {
+  margin-bottom: 32px;
+}
+
+.products-header h2 {
+  margin: 0 0 8px;
+}
+
+.products-header p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-gray);
+}
+
+@media (max-width: 640px) {
+  .products-container {
+    padding: 20px;
+  }
+
+  .products-header h2 {
+    font-size: var(--font-size-2xl);
+  }
+}

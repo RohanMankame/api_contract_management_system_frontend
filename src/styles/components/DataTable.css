@@ -1,0 +1,26 @@
+@import '../colors.css';
+
+.data-table-container {
+  height: 600px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.data-table-loading,
+.data-table-error {
+  padding: 40px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.data-table-error {
+  color: var(--color-error);
+}
+
+.ag-theme-quartz {
+  --ag-background-color: var(--color-bg-white);
+  --ag-foreground-color: var(--color-text-dark);
+  --ag-header-background-color: var(--color-bg-light);
+  --ag-border-color: var(--color-border-light);
+}
