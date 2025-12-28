@@ -3,13 +3,16 @@ import { PageLayout } from '../components/PageLayout';
 import { DataTable } from '../components/DataTable';
 import { useApi } from '../hooks/useApi';
 import { EntityModal } from '../components/EntityModal';
+import { EditEntityModal } from '../components/EditEntityModal';
 import '../styles/pages/ProductsPage.css';
 
 export function ProductsPage() {
-  const { data: response, isLoading, error, get, post } = useApi();
+  const { data: response, isLoading, error, get, post, put, delete: deleteRequest } = useApi();
   const gridApiRef = useRef(null);
   const [searchText, setSearchText] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     get('/products');
@@ -28,9 +31,9 @@ export function ProductsPage() {
   ];
 
   const formFields = [
-  { name: 'api_name', label: 'Product Name', type: 'text', required: true },
-  { name: 'description', label: 'Description', type: 'textarea', required: true },
-];
+    { name: 'api_name', label: 'Product Name', type: 'text', required: true },
+    { name: 'description', label: 'Description', type: 'textarea', required: true },
+  ];
 
   const handleSearch = (e) => {
     const value = e.target.value;
@@ -44,14 +47,38 @@ export function ProductsPage() {
     gridApiRef.current = params.api;
   };
 
+  const handleRowDoubleClick = (event) => {
+    setSelectedProduct(event.data);
+    setShowEditModal(true);
+  };
+
   const handleAddProduct = async (formData) => {
     try {
       await post('/products', formData);
-      setShowModal(false);
-      // Refresh the table
+      setShowAddModal(false);
       get('/products');
     } catch (err) {
       console.error('Error adding product:', err);
+    }
+  };
+
+  const handleEditProduct = async (formData) => {
+    try {
+      await put(`/products/${selectedProduct.id}`, formData);
+      setShowEditModal(false);
+      get('/products');
+    } catch (err) {
+      console.error('Error updating product:', err);
+    }
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    try {
+      await deleteRequest(`/products/${productId}`);
+      setShowEditModal(false);
+      get('/products');
+    } catch (err) {
+      console.error('Error deleting product:', err);
     }
   };
 
@@ -64,7 +91,7 @@ export function ProductsPage() {
               <h2>Products</h2>
               <p>Manage your API products and versions</p>
             </div>
-            <button onClick={() => setShowModal(true)} className="btn-add-product">
+            <button onClick={() => setShowAddModal(true)} className="btn-add-product">
               + Add Product
             </button>
           </div>
@@ -85,13 +112,23 @@ export function ProductsPage() {
           error={error}
           columnDefs={columnDefs}
           paginationPageSize={10}
+          onRowDoubleClick={handleRowDoubleClick}
         />
         <EntityModal
-          isOpen={showModal}
+          isOpen={showAddModal}
           title="Add Product"
           fields={formFields}
           onSubmit={handleAddProduct}
-          onClose={() => setShowModal(false)}
+          onClose={() => setShowAddModal(false)}
+        />
+        <EditEntityModal
+          isOpen={showEditModal}
+          title="Edit Product"
+          fields={formFields}
+          data={selectedProduct}
+          onSubmit={handleEditProduct}
+          onDelete={handleDeleteProduct}
+          onClose={() => setShowEditModal(false)}
         />
       </div>
     </PageLayout>
