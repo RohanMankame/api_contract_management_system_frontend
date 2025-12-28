@@ -1,7 +1,7 @@
 @import '../colors.css';
 
 .data-table-container {
-  height: 600px;
+  height: 400px;
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
   overflow: hidden;
