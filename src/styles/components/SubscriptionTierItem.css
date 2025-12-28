@@ -1,0 +1,115 @@
+@import '../colors.css';
+@import '../typography.css';
+
+.tier-container {
+  background: var(--color-bg-white);
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-left: 16px;
+}
+
+.tier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  background: #fafafa;
+}
+
+.tier-header:hover {
+  background: #f5f5f5;
+}
+
+.tier-title-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.expand-icon {
+  font-size: 12px;
+  color: var(--color-text-gray);
+  transition: transform 0.3s;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tier-title-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tier-date-range {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-dark);
+}
+
+.tier-price {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  padding: 2px 8px;
+  background: rgba(39, 174, 96, 0.1);
+  border-radius: 4px;
+}
+
+.tier-content {
+  padding: 12px 16px;
+  border-top: 1px solid #e8e8e8;
+  background: rgba(0, 0, 0, 0.005);
+}
+
+.tier-details {
+  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-row .label {
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-row .value {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dark);
+  word-break: break-word;
+}
+
+.tier-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.btn-edit-tier {
+  padding: 6px 12px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-edit-tier:hover {
+  background: #229d4e;
+}

@@ -1,4 +1,3 @@
-// src/components/SubscriptionList.jsx
 import React, { useState } from 'react';
 import { SubscriptionItem } from './SubscriptionItem';
 import { EntityModal } from './EntityModal';
@@ -10,7 +9,12 @@ export function SubscriptionList({
   products,
   onAddSubscription,
   onEditSubscription,
-  onDeleteSubscription
+  onDeleteSubscription,
+  expandedTiers,
+  onToggleTierExpand,
+  onAddTier,
+  onEditTier,
+  onDeleteTier
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -79,6 +83,11 @@ export function SubscriptionList({
                 products={products}
                 onEditSubscription={onEditSubscription}
                 onDeleteSubscription={onDeleteSubscription}
+                onAddTier={onAddTier}
+                onEditTier={onEditTier}
+                onDeleteTier={onDeleteTier}
+                expandedTiers={expandedTiers}
+                onToggleTierExpand={onToggleTierExpand}
               />
             ))
           ) : (

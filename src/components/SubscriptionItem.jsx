@@ -1,7 +1,21 @@
+// src/components/SubscriptionItem.jsx
 import React, { useState } from 'react';
 import { EditEntityModal } from './EditEntityModal';
+import { SubscriptionTierList } from './SubscriptionTierList';
 
-export function SubscriptionItem({ subscription, isExpanded, onToggleExpand, products, onEditSubscription, onDeleteSubscription }) {
+export function SubscriptionItem({ 
+  subscription, 
+  isExpanded, 
+  onToggleExpand, 
+  products, 
+  onEditSubscription, 
+  onDeleteSubscription,
+  onAddTier,
+  onEditTier,
+  onDeleteTier,
+  expandedTiers,
+  onToggleTierExpand
+}) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [error, setError] = useState(null);
 
@@ -72,6 +86,8 @@ export function SubscriptionItem({ subscription, isExpanded, onToggleExpand, pro
     setShowEditModal(false);
   };
 
+  const tiers = subscription.tiers && Array.isArray(subscription.tiers) ? subscription.tiers : [];
+
   return (
     <>
       <div className="subscription-container">
@@ -122,6 +138,16 @@ export function SubscriptionItem({ subscription, isExpanded, onToggleExpand, pro
                 Edit
               </button>
             </div>
+
+            <SubscriptionTierList
+              subscriptionId={subscription.id}
+              tiers={tiers}
+              expandedTiers={expandedTiers}
+              onToggleExpand={onToggleTierExpand}
+              onAddTier={onAddTier}
+              onEditTier={onEditTier}
+              onDeleteTier={onDeleteTier}
+            />
           </div>
         )}
       </div>

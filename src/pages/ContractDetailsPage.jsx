@@ -8,6 +8,8 @@ import '../styles/pages/ContractDetailsPage.css';
 import '../styles/components/ContractInfoCard.css';
 import '../styles/components/SubscriptionList.css';
 import '../styles/components/SubscriptionItem.css';
+import '../styles/components/SubscriptionTierItem.css';
+import '../styles/components/SubscriptionTierList.css';
 
 export function ContractDetailsPage() {
   const { id } = useParams();
@@ -16,6 +18,7 @@ export function ContractDetailsPage() {
   const [contract, setContract] = useState(null);
   const [subscriptions, setSubscriptions] = useState([]);
   const [expandedSubscriptions, setExpandedSubscriptions] = useState(new Set());
+  const [expandedTiers, setExpandedTiers] = useState(new Set());
   const [clients, setClients] = useState([]);
   const [products, setProducts] = useState([]);
 
@@ -82,6 +85,18 @@ export function ContractDetailsPage() {
         newSet.delete(subscriptionId);
       } else {
         newSet.add(subscriptionId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleTierExpanded = (tierId) => {
+    setExpandedTiers(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(tierId)) {
+        newSet.delete(tierId);
+      } else {
+        newSet.add(tierId);
       }
       return newSet;
     });
@@ -161,6 +176,77 @@ export function ContractDetailsPage() {
     }
   };
 
+  const handleAddTier = async (subscriptionId, formData) => {
+    try {
+      // Convert date strings (YYYY-MM-DD) to ISO format with time
+      const startDate = formData.start_date 
+        ? new Date(formData.start_date + 'T00:00:00.000Z').toISOString()
+        : null;
+      const endDate = formData.end_date 
+        ? new Date(formData.end_date + 'T00:00:00.000Z').toISOString()
+        : null;
+
+      const dataToSubmit = {
+        subscription_id: subscriptionId,
+        min_calls: parseInt(formData.min_calls, 10),
+        max_calls: parseInt(formData.max_calls, 10),
+        base_price: parseFloat(formData.base_price),
+        price_per_tier: formData.price_per_tier ? parseFloat(formData.price_per_tier) : null,
+        start_date: startDate,
+        end_date: endDate || null
+      };
+
+      await post('/subscription-tiers', dataToSubmit);
+      
+      // Reload the contract data to get updated tiers
+      await loadContractData();
+    } catch (err) {
+      console.error('Error adding tier:', err);
+      throw err;
+    }
+  };
+
+  const handleEditTier = async (tierId, formData) => {
+    try {
+      // Convert date strings (YYYY-MM-DD) to ISO format with time
+      const startDate = formData.start_date 
+        ? new Date(formData.start_date + 'T00:00:00.000Z').toISOString()
+        : null;
+      const endDate = formData.end_date 
+        ? new Date(formData.end_date + 'T00:00:00.000Z').toISOString()
+        : null;
+
+      const dataToSubmit = {
+        min_calls: parseInt(formData.min_calls, 10),
+        max_calls: parseInt(formData.max_calls, 10),
+        base_price: parseFloat(formData.base_price),
+        price_per_tier: formData.price_per_tier ? parseFloat(formData.price_per_tier) : null,
+        start_date: startDate,
+        end_date: endDate || null
+      };
+
+      await put(`/subscription-tiers/${tierId}`, dataToSubmit);
+      
+      // Reload the contract data to get updated tiers
+      await loadContractData();
+    } catch (err) {
+      console.error('Error updating tier:', err);
+      throw err;
+    }
+  };
+
+  const handleDeleteTier = async (tierId) => {
+    try {
+      await deleteRequest(`/subscription-tiers/${tierId}`);
+      
+      // Reload the contract data to get updated tiers
+      await loadContractData();
+    } catch (err) {
+      console.error('Error deleting tier:', err);
+      throw err;
+    }
+  };
+
   if (isLoading) {
     return (
       <PageLayout>
@@ -207,6 +293,11 @@ export function ContractDetailsPage() {
           onAddSubscription={handleAddSubscription}
           onEditSubscription={handleEditSubscription}
           onDeleteSubscription={handleDeleteSubscription}
+          expandedTiers={expandedTiers}
+          onToggleTierExpand={toggleTierExpanded}
+          onAddTier={handleAddTier}
+          onEditTier={handleEditTier}
+          onDeleteTier={handleDeleteTier}
         />
       </div>
     </PageLayout>

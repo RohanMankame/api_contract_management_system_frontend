@@ -1,0 +1,59 @@
+/* src/styles/components/SubscriptionTierList.css */
+@import '../colors.css';
+@import '../typography.css';
+
+.tiers-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.tiers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tiers-header h4 {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+}
+
+.btn-add-tier {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add-tier:hover {
+  background: #229d4e;
+}
+
+.tiers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.no-tiers {
+  padding: 16px;
+  text-align: center;
+  color: var(--color-text-gray);
+  background: #fafafa;
+  border: 1px dashed #e0e0e0;
+  border-radius: 6px;
+  font-size: var(--font-size-sm);
+}
+
+.no-tiers p {
+  margin: 0;
+}
