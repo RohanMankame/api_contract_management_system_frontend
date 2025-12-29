@@ -33,7 +33,7 @@ export function ContractActionModal({ isOpen, contract, onEdit, onDelete, onClos
 
         {showDeleteConfirm ? (
           <div className="modal-delete-confirm">
-            <p>Are you sure you want to delete this contract? This action cannot be undone.</p>
+            <p>Are you sure you want to archive this contract? </p>
             <div className="modal-footer">
               <button 
                 type="button" 
