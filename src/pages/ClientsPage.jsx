@@ -56,28 +56,34 @@ export function ClientsPage() {
   };
 
   const handleAddClient = async (formData) => {
-    
+  try {
     await post('/clients', formData);
-    // Only close modal and refresh if successful (no error thrown)
     setShowAddModal(false);
     get('/clients');
-  };
+  } catch (err) {
+    throw err;
+  }
+};
 
-  const handleEditClient = async (formData) => {
-    // Don't use try-catch here - let the modal handle errors
+const handleEditClient = async (formData) => {
+  try {
     await put(`/clients/${selectedClient.id}`, formData);
-    // Only close modal and refresh if successful (no error thrown)
     setShowEditModal(false);
     get('/clients');
-  };
+  } catch (err) {
+    throw err;
+  }
+};
 
-  const handleDeleteClient = async (clientId) => {
-    // Don't use try-catch here - let the modal handle errors
+const handleDeleteClient = async (clientId) => {
+  try {
     await deleteRequest(`/clients/${clientId}`);
-    // Only close modal and refresh if successful (no error thrown)
     setShowEditModal(false);
     get('/clients');
-  };
+  } catch (err) {
+    throw err;
+  }
+};
 
   return (
     <PageLayout>
