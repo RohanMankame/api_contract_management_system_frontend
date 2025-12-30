@@ -4,6 +4,7 @@ import '../styles/components/EntityModal.css';
 export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -16,24 +17,46 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null); // Clear previous errors
     try {
       await onSubmit(formData);
       setFormData({});
+      setError(null); // Clear error on success
+    } catch (err) {
+      // Extract error message from the error object
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          err.message ||
+                          'An unexpected error occurred';
+      setError(errorMessage);
+      // Don't close the modal - keep it open to show the error
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const handleClose = () => {
+    setFormData({});
+    setError(null); // Clear error when closing
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{title}</h2>
-          <button className="modal-close" onClick={onClose}>×</button>
+          <button className="modal-close" onClick={handleClose}>×</button>
         </div>
         
+        {error && (
+          <div className="modal-error-message">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="modal-form">
           {fields.map(field => (
             <div key={field.name} className="form-group">
@@ -84,7 +107,7 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
           ))}
           
           <div className="modal-footer">
-            <button type="button" onClick={onClose} className="btn-cancel">
+            <button type="button" onClick={handleClose} className="btn-cancel">
               Cancel
             </button>
             <button type="submit" disabled={isSubmitting} className="btn-submit">
