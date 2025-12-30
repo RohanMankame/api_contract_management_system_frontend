@@ -19,12 +19,7 @@ export function useApi() {
       return responseData;
 
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 
-                          err.response?.data?.error || 
-                          err.message ||
-                          'An unexpected error occurred';
-      setError(errorMessage);
-      throw err;  
+      throw err; 
 
     } finally {
       setIsLoading(false);  

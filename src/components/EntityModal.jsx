@@ -24,9 +24,8 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
       setError(null); // Clear error on success
     } catch (err) {
       // Extract error message from the error object
-      const errorMessage = err.response?.data?.message || 
-                          err.response?.data?.error || 
-                          err.message ||
+      const errorMessage = err.response?.data?.errors?.error || 
+                            err.message ||
                           'An unexpected error occurred';
       setError(errorMessage);
       // Don't close the modal - keep it open to show the error
@@ -36,10 +35,11 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
   };
 
   const handleClose = () => {
-    setFormData({});
-    setError(null); // Clear error when closing
-    onClose();
-  };
+  
+  setFormData({});
+  setError(null);
+  onClose();
+};
 
   if (!isOpen) return null;
 

@@ -9,8 +9,7 @@ const apiClient = axios.create({
   }
 });
 
-
-// use JWT stored in localStorage in header
+// Request interceptor with logging
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken');
@@ -18,18 +17,39 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Log the request
+    console.log('📤 API Request:', {
+      method: config.method.toUpperCase(),
+      url: config.url,
+      headers: config.headers,
+      data: config.data
+    });
+    
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-
-// handle 401 errors globally
+// Response interceptor with logging
 apiClient.interceptors.response.use(
-
-  (response) => response, 
-
+  (response) => {
+    // Log the response
+    console.log('📥 API Response:', {
+      status: response.status,
+      url: response.config.url,
+      data: response.data
+    });
+    return response;
+  },
   (error) => {
+    // Log errors
+    console.error('❌ API Error:', {
+      status: error.response?.status,
+      url: error.config?.url,
+      error: error.response?.data
+    });
+    
     // JWT expired or invalid
     if (error.response?.status === 401) {
       localStorage.removeItem('authToken');

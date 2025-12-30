@@ -53,20 +53,27 @@ export function ProductsPage() {
   };
 
   const handleAddProduct = async (formData) => {
-    // Don't use try-catch here - let the modal handle errors
+  
+  try {
     await post('/products', formData);
-    // Only close modal and refresh if successful (no error thrown)
+    
     setShowAddModal(false);
     get('/products');
-  };
+  } catch (err) {
+    
+    throw err;
+  }
+};
 
   const handleEditProduct = async (formData) => {
-    // Don't use try-catch here - let the modal handle errors
+    try {
     await put(`/products/${selectedProduct.id}`, formData);
-    // Only close modal and refresh if successful (no error thrown)
     setShowEditModal(false);
     get('/products');
-  };
+  } catch (err) {
+    throw err;
+  }
+};
 
   const handleDeleteProduct = async (productId) => {
     // Don't use try-catch here - let the modal handle errors

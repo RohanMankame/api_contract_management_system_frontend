@@ -56,7 +56,7 @@ export function ClientsPage() {
   };
 
   const handleAddClient = async (formData) => {
-    // Don't use try-catch here - let the modal handle errors
+    
     await post('/clients', formData);
     // Only close modal and refresh if successful (no error thrown)
     setShowAddModal(false);

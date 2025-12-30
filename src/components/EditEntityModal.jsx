@@ -16,7 +16,7 @@ export function EditEntityModal({ isOpen, title, fields, data, onSubmit, onDelet
       });
       setFormData(initialData);
       setShowDeleteConfirm(false);
-      setError(null); // Clear error when opening with new data
+      //setError(null);
     }
   }, [data, isOpen, fields]);
 
@@ -29,42 +29,42 @@ export function EditEntityModal({ isOpen, title, fields, data, onSubmit, onDelet
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null); // Clear previous errors
-    try {
-      await onSubmit(formData);
-      setFormData({});
-      setError(null); // Clear error on success
-    } catch (err) {
-      // Extract error message from the error object
-      const errorMessage = err.response?.data?.message || 
-                          err.response?.data?.error || 
-                          err.message ||
-                          'An unexpected error occurred';
-      setError(errorMessage);
-      // Don't close the modal - keep it open to show the error
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  e.preventDefault();
+  setIsSubmitting(true);
+  setError(null);
+  try {
+    await onSubmit(formData);
+    setFormData({});
+    setError(null);
+  } catch (err) {
+    console.log('🔴 Edit error caught:', err);
+    const errorMessage = err.response?.data?.errors?.error || 
+                        err.message ||
+                        'An unexpected error occurred';
+    console.log('🔴 Extracted error message:', errorMessage);
+    console.log('🔴 About to call setError with:', errorMessage);
+    setError(errorMessage);
+    console.log('🔴 setError called');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleDelete = async () => {
     setIsSubmitting(true);
-    setError(null); // Clear previous errors
+    setError(null);
     try {
       await onDelete(data.id);
       setFormData({});
-      setError(null); // Clear error on success
+      setError(null);
     } catch (err) {
-      // Extract error message from the error object
-      const errorMessage = err.response?.data?.message || 
+      const errorMessage = err.response?.data?.errors?.error || 
+                          err.response?.data?.message || 
                           err.response?.data?.error || 
                           err.message ||
                           'An unexpected error occurred';
       setError(errorMessage);
-      setShowDeleteConfirm(false); // Hide delete confirm on error
-      // Don't close the modal - keep it open to show the error
+      setShowDeleteConfirm(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -72,7 +72,7 @@ export function EditEntityModal({ isOpen, title, fields, data, onSubmit, onDelet
 
   const handleClose = () => {
     setFormData({});
-    setError(null); // Clear error when closing
+    setError(null);
     setShowDeleteConfirm(false);
     onClose();
   };
