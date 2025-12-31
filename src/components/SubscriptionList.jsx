@@ -1,24 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SubscriptionItem } from './SubscriptionItem';
 import { EntityModal } from './EntityModal';
+import { useApi } from '../hooks/useApi';
+import '../styles/components/SubscriptionList.css';
 
 export function SubscriptionList({ 
   subscriptions, 
   expandedSubscriptions, 
   onToggleExpand,
   products,
-  onAddSubscription,
-  onEditSubscription,
-  onDeleteSubscription,
-  expandedTiers,
-  onToggleTierExpand,
-  onAddTier,
-  onEditTier,
-  onDeleteTier
+  contractId,
+  onSubscriptionsUpdate
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
+  const { post } = useApi();
 
-  const formFields = [
+  const formFields = useMemo(() => [
     { 
       name: 'product_id', 
       label: 'Product', 
@@ -48,15 +45,12 @@ export function SubscriptionList({
       ],
       required: true 
     },
-  ];
+  ], [products]);
 
   const handleAddSubscription = async (formData) => {
-    try {
-      await onAddSubscription(formData);
-      setShowAddModal(false);
-    } catch (err) {
-      console.error('Error adding subscription:', err);
-    }
+    await post(`/contracts/${contractId}/subscriptions`, formData);
+    setShowAddModal(false);
+    onSubscriptionsUpdate();
   };
 
   return (
@@ -81,13 +75,7 @@ export function SubscriptionList({
                 isExpanded={expandedSubscriptions.has(subscription.id)}
                 onToggleExpand={onToggleExpand}
                 products={products}
-                onEditSubscription={onEditSubscription}
-                onDeleteSubscription={onDeleteSubscription}
-                onAddTier={onAddTier}
-                onEditTier={onEditTier}
-                onDeleteTier={onDeleteTier}
-                expandedTiers={expandedTiers}
-                onToggleTierExpand={onToggleTierExpand}
+                onSubscriptionUpdate={onSubscriptionsUpdate}
               />
             ))
           ) : (

@@ -1,36 +1,31 @@
-// src/components/SubscriptionItem.jsx
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { EditEntityModal } from './EditEntityModal';
+import { useApi } from '../hooks/useApi';
 import { SubscriptionTierList } from './SubscriptionTierList';
+import '../styles/components/SubscriptionItem.css';
 
 export function SubscriptionItem({ 
   subscription, 
   isExpanded, 
   onToggleExpand, 
-  products, 
-  onEditSubscription, 
-  onDeleteSubscription,
-  onAddTier,
-  onEditTier,
-  onDeleteTier,
-  expandedTiers,
-  onToggleTierExpand
+  products,
+  onSubscriptionUpdate
 }) {
   const [showEditModal, setShowEditModal] = useState(false);
-  const [error, setError] = useState(null);
+  const [expandedTiers, setExpandedTiers] = useState(new Set());
+  const { put, get, delete: deleteRequest } = useApi();
 
-  // Find the product name by matching product_id
   const getProductName = (productId) => {
     const product = products.find(p => p.id === productId);
     return product ? product.api_name : productId;
   };
 
-  const formFields = [
+  const formFields = useMemo(() => [
     { 
       name: 'product_id', 
       label: 'Product', 
       type: 'select',
-      options: products.map(p => ({ value: p.id, label: p.api_name })),
+      options: products.map(p => ({ value: p.id.toString(), label: p.api_name })),
       required: true 
     },
     { 
@@ -55,35 +50,39 @@ export function SubscriptionItem({
       ],
       required: true 
     },
-  ];
+  ], [products]);
+
+  const subscriptionForModal = {
+    ...subscription,
+    product_id: subscription.product_id.toString()
+  };
 
   const handleEditSubmit = async (formData) => {
-    try {
-      setError(null);
-      await onEditSubscription(subscription.id, formData);
-      setShowEditModal(false);
-    } catch (err) {
-      const errorMessage = err.response?.data?.errors 
-        ? Object.values(err.response.data.errors).flat().join(', ')
-        : err.response?.data?.message || err.message || 'Error updating subscription';
-      setError(errorMessage);
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      setError(null);
-      await onDeleteSubscription(subscription.id);
-      setShowEditModal(false);
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || 'Error deleting subscription';
-      setError(errorMessage);
-    }
-  };
-
-  const handleCloseModal = () => {
-    setError(null);
+    const submitData = {
+      ...formData,
+      product_id: parseInt(formData.product_id, 10)
+    };
+    await put(`/subscriptions/${subscription.id}`, submitData);
+    const subscriptionResponse = await get(`/subscriptions/${subscription.id}`);
+    const updatedSubscription = subscriptionResponse?.data?.subscription || subscriptionResponse?.subscription || subscriptionResponse;
     setShowEditModal(false);
+    onSubscriptionUpdate();
+  };
+
+  const handleDeleteSubmit = async () => {
+    await deleteRequest(`/subscriptions/${subscription.id}`);
+    setShowEditModal(false);
+    onSubscriptionUpdate();
+  };
+
+  const handleToggleTierExpand = (tierId) => {
+    const newExpanded = new Set(expandedTiers);
+    if (newExpanded.has(tierId)) {
+      newExpanded.delete(tierId);
+    } else {
+      newExpanded.add(tierId);
+    }
+    setExpandedTiers(newExpanded);
   };
 
   const tiers = subscription.tiers && Array.isArray(subscription.tiers) ? subscription.tiers : [];
@@ -113,19 +112,19 @@ export function SubscriptionItem({
           <div className="subscription-content">
             <div className="subscription-details">
               <div className="detail-row">
-                <span className="label">ID:</span>
+                <span className="label">ID</span>
                 <span className="value">{subscription.id}</span>
               </div>
               <div className="detail-row">
-                <span className="label">Product ID:</span>
-                <span className="value">{subscription.product_id}</span>
+                <span className="label">Product</span>
+                <span className="value">{getProductName(subscription.product_id)}</span>
               </div>
               <div className="detail-row">
-                <span className="label">Pricing Type:</span>
+                <span className="label">Pricing Type</span>
                 <span className="value">{subscription.pricing_type}</span>
               </div>
               <div className="detail-row">
-                <span className="label">Strategy:</span>
+                <span className="label">Strategy</span>
                 <span className="value">{subscription.strategy}</span>
               </div>
             </div>
@@ -135,7 +134,7 @@ export function SubscriptionItem({
                 onClick={() => setShowEditModal(true)}
                 className="btn-edit-subscription"
               >
-                Edit
+                Edit Subscription
               </button>
             </div>
 
@@ -143,10 +142,10 @@ export function SubscriptionItem({
               subscriptionId={subscription.id}
               tiers={tiers}
               expandedTiers={expandedTiers}
-              onToggleExpand={onToggleTierExpand}
-              onAddTier={onAddTier}
-              onEditTier={onEditTier}
-              onDeleteTier={onDeleteTier}
+              onToggleExpand={handleToggleTierExpand}
+              onAddTier={() => onSubscriptionUpdate()}
+              onEditTier={() => onSubscriptionUpdate()}
+              onDeleteTier={() => onSubscriptionUpdate()}
             />
           </div>
         )}
@@ -156,11 +155,10 @@ export function SubscriptionItem({
         isOpen={showEditModal}
         title="Edit Subscription"
         fields={formFields}
-        data={subscription}
+        data={subscriptionForModal}
         onSubmit={handleEditSubmit}
-        onDelete={handleDelete}
-        onClose={handleCloseModal}
-        error={error}
+        onDelete={handleDeleteSubmit}
+        onClose={() => setShowEditModal(false)}
       />
     </>
   );

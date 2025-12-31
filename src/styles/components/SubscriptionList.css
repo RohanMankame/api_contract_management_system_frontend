@@ -10,7 +10,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .subscriptions-header h2 {
@@ -21,25 +21,30 @@
 }
 
 .btn-add-subscription {
-  background: var(--color-primary);
-  color: white;
+  background-color: var(--color-primary);
+  color: rgb(255, 255, 255);
   border: none;
-  padding: 10px 16px;
+  padding: 10px 20px;
   border-radius: 6px;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .btn-add-subscription:hover {
-  background: #229d4e;
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.2);
+}
+
+.btn-add-subscription:active {
+  transform: scale(0.98);
 }
 
 .subscriptions-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .no-subscriptions {

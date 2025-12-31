@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/PageLayout';
 import { useApi } from '../hooks/useApi';
 import { ContractInfoCard } from '../components/ContractInfoCard';
+import { SubscriptionList } from '../components/SubscriptionList';
 import '../styles/pages/ContractDetailsPage.css';
 
 export function ContractDetailsPage() {
@@ -11,11 +12,27 @@ export function ContractDetailsPage() {
   const { data: response, isLoading, error, get } = useApi();
   const [contract, setContract] = useState(null);
   const [clients, setClients] = useState([]);
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [expandedSubscriptions, setExpandedSubscriptions] = useState(new Set());
 
-  // Fetch contract details and clients on component mount
+  // Fetch contract details, clients, subscriptions and products on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
+        // Fetch products first (needed for subscriptions)
+        const productsResponse = await get('/products');
+        let productsData = [];
+        if (productsResponse && productsResponse.data && Array.isArray(productsResponse.data.products)) {
+          productsData = productsResponse.data.products;
+        } else if (productsResponse && Array.isArray(productsResponse.products)) {
+          productsData = productsResponse.products;
+        } else if (Array.isArray(productsResponse)) {
+          productsData = productsResponse;
+        }
+        setProducts(productsData);
+        console.log('Loaded products:', productsData);
+
         // Fetch the specific contract
         const contractResponse = await get(`/contracts/${id}`);
         const contractData = contractResponse?.data?.contract || contractResponse?.contract || contractResponse;
@@ -32,6 +49,18 @@ export function ContractDetailsPage() {
           clientsData = clientsResponse;
         }
         setClients(clientsData);
+
+        // Fetch subscriptions for the contract
+        const subscriptionsResponse = await get(`/contracts/${id}/subscriptions`);
+        let subscriptionsData = [];
+        if (subscriptionsResponse && subscriptionsResponse.data && Array.isArray(subscriptionsResponse.data.subscriptions)) {
+          subscriptionsData = subscriptionsResponse.data.subscriptions;
+        } else if (subscriptionsResponse && Array.isArray(subscriptionsResponse.subscriptions)) {
+          subscriptionsData = subscriptionsResponse.subscriptions;
+        } else if (Array.isArray(subscriptionsResponse)) {
+          subscriptionsData = subscriptionsResponse;
+        }
+        setSubscriptions(subscriptionsData);
       } catch (err) {
         console.error('Error loading contract details:', err);
       }
@@ -50,6 +79,33 @@ export function ContractDetailsPage() {
 
   const handleDeleteContract = () => {
     navigate('/contracts');
+  };
+
+  const handleToggleSubscriptionExpand = (subscriptionId) => {
+    const newExpanded = new Set(expandedSubscriptions);
+    if (newExpanded.has(subscriptionId)) {
+      newExpanded.delete(subscriptionId);
+    } else {
+      newExpanded.add(subscriptionId);
+    }
+    setExpandedSubscriptions(newExpanded);
+  };
+
+  const handleSubscriptionsUpdate = async () => {
+    try {
+      const subscriptionsResponse = await get(`/contracts/${id}/subscriptions`);
+      let subscriptionsData = [];
+      if (subscriptionsResponse && subscriptionsResponse.data && Array.isArray(subscriptionsResponse.data.subscriptions)) {
+        subscriptionsData = subscriptionsResponse.data.subscriptions;
+      } else if (subscriptionsResponse && Array.isArray(subscriptionsResponse.subscriptions)) {
+        subscriptionsData = subscriptionsResponse.subscriptions;
+      } else if (Array.isArray(subscriptionsResponse)) {
+        subscriptionsData = subscriptionsResponse;
+      }
+      setSubscriptions(subscriptionsData);
+    } catch (err) {
+      console.error('Error updating subscriptions:', err);
+    }
   };
 
   if (isLoading) {
@@ -92,7 +148,17 @@ export function ContractDetailsPage() {
             onContractUpdate={handleContractUpdate}
             onDelete={handleDeleteContract}
           />
-          {/* Subscription components will go here later */}
+          
+          {products.length > 0 && (
+            <SubscriptionList
+              subscriptions={subscriptions}
+              expandedSubscriptions={expandedSubscriptions}
+              onToggleExpand={handleToggleSubscriptionExpand}
+              products={products}
+              contractId={id}
+              onSubscriptionsUpdate={handleSubscriptionsUpdate}
+            />
+          )}
         </div>
       </div>
     </PageLayout>
