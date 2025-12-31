@@ -1,11 +1,13 @@
-/* import React from 'react';
+import { useMemo, useState } from 'react';
 import { EditEntityModal } from './EditEntityModal';
+import { useApi } from '../hooks/useApi';
 import '../styles/components/ContractInfoCard.css';
 
-export function ContractInfoCard({ contract, clients, onEditSubmit, onDelete }) {
-  const [showEditModal, setShowEditModal] = React.useState(false);
+export function ContractInfoCard({ contract, clients, onContractUpdate, onDelete }) {
+  const [showEditModal, setShowEditModal] = useState(false);
+  const { put, get, delete: deleteRequest } = useApi();
 
-  const formFields = [
+  const formFields = useMemo(() => [
     { 
       name: 'client_id', 
       label: 'Client', 
@@ -16,7 +18,7 @@ export function ContractInfoCard({ contract, clients, onEditSubmit, onDelete }) 
     { name: 'contract_name', label: 'Contract Name', type: 'text', required: true },
     { name: 'start_date', label: 'Start Date', type: 'date', required: true },
     { name: 'end_date', label: 'End Date', type: 'date', required: true },
-  ];
+  ], [clients]);
 
   const formatDateForInput = (dateString) => {
     if (!dateString) return '';
@@ -33,9 +35,19 @@ export function ContractInfoCard({ contract, clients, onEditSubmit, onDelete }) 
     end_date: formatDateForInput(contract.end_date)
   };
 
-  const handleSubmit = async (formData) => {
-    await onEditSubmit(formData);
-    setShowEditModal(false);
+  // Handle edit 
+  const handleEditSubmit = async (formData) => {
+    await put(`/contracts/${contract.id}`, formData);
+    // Refresh contract data
+    const contractResponse = await get(`/contracts/${contract.id}`);
+    const updatedContract = contractResponse?.data?.contract || contractResponse?.contract || contractResponse;
+    onContractUpdate(updatedContract);
+  };
+
+  // Handle delete 
+  const handleDeleteSubmit = async (contractId) => {
+    await deleteRequest(`/contracts/${contractId}`);
+    onDelete();
   };
 
   return (
@@ -86,10 +98,10 @@ export function ContractInfoCard({ contract, clients, onEditSubmit, onDelete }) 
         title="Edit Contract"
         fields={formFields}
         data={contractForModal}
-        onSubmit={handleSubmit}
-        onDelete={onDelete}
+        onSubmit={handleEditSubmit}
+        onDelete={handleDeleteSubmit}
         onClose={() => setShowEditModal(false)}
       />
     </>
   );
-} */
+}

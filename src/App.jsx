@@ -6,7 +6,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { ClientsPage } from './pages/ClientsPage';
 import { ContractsPage } from './pages/ContractsPage';
-//import { ContractDetailsPage } from './pages/ContractDetailsPage';
+import { ContractDetailsPage } from './pages/ContractDetailsPage';
 import './styles/App.css';
 
 function App() {
@@ -50,14 +50,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* <Route
+          <Route
             path="/contracts/:id"
             element={
               <ProtectedRoute>
                 <ContractDetailsPage />
               </ProtectedRoute>
             }
-          /> */}
+          />
 
           {/* Default redirect */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />

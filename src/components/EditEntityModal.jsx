@@ -9,16 +9,16 @@ export function EditEntityModal({ isOpen, title, fields, data, onSubmit, onDelet
 
   // Populate form data when modal opens
   useEffect(() => {
-    if (data && isOpen) {
-      const initialData = {};
-      fields.forEach(field => {
-        initialData[field.name] = data[field.name] || '';
-      });
-      setFormData(initialData);
-      setShowDeleteConfirm(false);
-     
-    }
-  }, [isOpen]); 
+  if (data && isOpen) {
+    const initialData = {};
+    fields.forEach(field => {
+      initialData[field.name] = data[field.name] || '';
+    });
+    setFormData(initialData);
+    setShowDeleteConfirm(false);
+    setError(null); 
+  }
+}, [isOpen]);
 
 
   // Handle input changes
