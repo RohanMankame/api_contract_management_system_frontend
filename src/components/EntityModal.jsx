@@ -14,33 +14,34 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
     }));
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError(null); // Clear previous errors
+    setError(null);
     try {
       await onSubmit(formData);
       setFormData({});
-      setError(null); // Clear error on success
+      onClose(); // Close modal on successful submission
     } catch (err) {
-      // Extract error message from the error object
       const errorMessage = err.response?.data?.errors?.error || 
-                            err.message ||
+                          err.response?.data?.message ||
+                          err.message ||
                           'An unexpected error occurred';
       setError(errorMessage);
-      // Don't close the modal - keep it open to show the error
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Handle modal close 
   const handleClose = () => {
-  
-  setFormData({});
-  setError(null);
-  onClose();
-};
+    setFormData({});
+    setError(null);
+    onClose();
+  };
 
+  // Don't render modal if not open
   if (!isOpen) return null;
 
   return (
