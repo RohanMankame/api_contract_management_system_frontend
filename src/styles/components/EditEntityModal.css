@@ -190,3 +190,15 @@
   line-height: 1.5;
 }
 
+
+.form-group-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}

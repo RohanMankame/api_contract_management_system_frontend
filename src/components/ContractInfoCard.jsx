@@ -8,17 +8,17 @@ export function ContractInfoCard({ contract, clients, onContractUpdate, onDelete
   const { put, get, delete: deleteRequest } = useApi();
 
   const formFields = useMemo(() => [
-    { 
-      name: 'client_id', 
-      label: 'Client', 
-      type: 'select',
-      options: clients.map(c => ({ value: c.id, label: c.company_name })),
-      required: true 
-    },
-    { name: 'contract_name', label: 'Contract Name', type: 'text', required: true },
-    { name: 'start_date', label: 'Start Date', type: 'date', required: true },
-    { name: 'end_date', label: 'End Date', type: 'date', required: true },
-  ], [clients]);
+  { 
+    name: 'client_id', 
+    label: 'Client', 
+    type: 'select',
+    options: clients.map(c => ({ value: c.id, label: c.company_name })),
+    required: true 
+  },
+  { name: 'contract_name', label: 'Contract Name', type: 'text', required: true },
+  { name: 'start_date', label: 'Start Date', type: 'date', required: true, group: 'dates' },
+  { name: 'end_date', label: 'End Date', type: 'date', required: true, group: 'dates' },
+], [clients]);
 
   const formatDateForInput = (dateString) => {
     if (!dateString) return '';

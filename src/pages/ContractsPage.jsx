@@ -63,17 +63,17 @@ export function ContractsPage() {
 
   // input fields for add modal
   const formFields = [
-    { 
-      name: 'client_id', 
-      label: 'Client', 
-      type: 'select',
-      options: clients.map(c => ({ value: c.id, label: c.company_name })),
-      required: true 
-    },
-    { name: 'contract_name', label: 'Contract Name', type: 'text', required: true },
-    { name: 'start_date', label: 'Start Date', type: 'date', required: true },
-    { name: 'end_date', label: 'End Date', type: 'date', required: true },
-  ];
+  { 
+    name: 'client_id', 
+    label: 'Client', 
+    type: 'select',
+    options: clients.map(c => ({ value: c.id, label: c.company_name })),
+    required: true 
+  },
+  { name: 'contract_name', label: 'Contract Name', type: 'text', required: true },
+  { name: 'start_date', label: 'Start Date', type: 'date', required: true, group: 'dates' },
+  { name: 'end_date', label: 'End Date', type: 'date', required: true, group: 'dates' },
+];
 
   // ag-grid quick filter search
   const handleSearch = (e) => {

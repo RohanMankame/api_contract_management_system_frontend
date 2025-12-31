@@ -8,13 +8,13 @@ export function SubscriptionTierItem({ tier, isExpanded, onToggleExpand, onEditT
   const { put, get, delete: deleteRequest } = useApi();
 
   const formFields = [
-    { name: 'min_calls', label: 'Min Calls', type: 'number', required: true },
-    { name: 'max_calls', label: 'Max Calls', type: 'number', required: true },
-    { name: 'base_price', label: 'Base Price', type: 'number', required: true },
-    { name: 'price_per_tier', label: 'Price Per Tier', type: 'number', required: false },
-    { name: 'start_date', label: 'Start Date', type: 'date', required: true },
-    { name: 'end_date', label: 'End Date', type: 'date', required: false },
-  ];
+  { name: 'min_calls', label: 'Min Calls', type: 'number', required: true, group: 'calls' },
+  { name: 'max_calls', label: 'Max Calls', type: 'number', required: true, group: 'calls' },
+  { name: 'base_price', label: 'Base Price', type: 'number', required: true },
+  { name: 'price_per_tier', label: 'Price Per Tier', type: 'number', required: false },
+  { name: 'start_date', label: 'Start Date', type: 'date', required: true, group: 'dates' },
+  { name: 'end_date', label: 'End Date', type: 'date', required: false, group: 'dates' },
+];
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';

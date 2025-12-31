@@ -24,10 +24,21 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
       setFormData({});
       onClose(); // Close modal on successful submission
     } catch (err) {
-      const errorMessage = err.response?.data?.errors?.error || 
-                          err.response?.data?.message ||
-                          err.message ||
-                          'An unexpected error occurred';
+      let errorMessage;
+      const errors = err.response?.data?.errors;
+      
+      if (errors && typeof errors === 'object') {
+        // If errors is an object with field names as keys, display all errors
+        errorMessage = Object.entries(errors)
+          .map(([field, message]) => `${field}: ${message}`)
+          .join('; ');
+      } else {
+        // Fallback to general error message
+        errorMessage = err.response?.data?.message ||
+                      err.message ||
+                      'An unexpected error occurred';
+      }
+      
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -40,6 +51,16 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
     setError(null);
     onClose();
   };
+
+  // Group fields by their group property
+  const groupedFields = fields.reduce((acc, field) => {
+    const groupKey = field.group || `solo-${field.name}`;
+    if (!acc[groupKey]) {
+      acc[groupKey] = [];
+    }
+    acc[groupKey].push(field);
+    return acc;
+  }, {});
 
   // Don't render modal if not open
   if (!isOpen) return null;
@@ -59,51 +80,58 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
         )}
 
         <form onSubmit={handleSubmit} className="modal-form">
-          {fields.map(field => (
-            <div key={field.name} className="form-group">
-              <label htmlFor={field.name}>{field.label}</label>
-              {field.type === 'textarea' ? (
-                <textarea
-                  id={field.name}
-                  name={field.name}
-                  value={formData[field.name] || ''}
-                  onChange={handleChange}
-                  required={field.required}
-                  rows="4"
-                />
-              ) : field.type === 'select' ? (
-                <select
-                  id={field.name}
-                  name={field.name}
-                  value={formData[field.name] || ''}
-                  onChange={handleChange}
-                  required={field.required}
-                >
-                  <option value="">Select {field.label}</option>
-                  {field.options?.map(opt => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              ) : field.type === 'checkbox' ? (
-                <input
-                  type="checkbox"
-                  id={field.name}
-                  name={field.name}
-                  checked={formData[field.name] || false}
-                  onChange={handleChange}
-                />
-              ) : (
-                <input
-                  type={field.type}
-                  id={field.name}
-                  name={field.name}
-                  value={formData[field.name] || ''}
-                  onChange={handleChange}
-                  required={field.required}
-                />
-              )}
+          {Object.entries(groupedFields).map(([groupKey, groupedFieldsList]) => (
+            <div 
+              key={groupKey} 
+              className={groupedFieldsList.length > 1 ? 'form-group-row' : 'form-group-wrapper'}
+            >
+              {groupedFieldsList.map(field => (
+                <div key={field.name} className="form-group">
+                  <label htmlFor={field.name}>{field.label}</label>
+                  {field.type === 'textarea' ? (
+                    <textarea
+                      id={field.name}
+                      name={field.name}
+                      value={formData[field.name] || ''}
+                      onChange={handleChange}
+                      required={field.required}
+                      rows="4"
+                    />
+                  ) : field.type === 'select' ? (
+                    <select
+                      id={field.name}
+                      name={field.name}
+                      value={formData[field.name] || ''}
+                      onChange={handleChange}
+                      required={field.required}
+                    >
+                      <option value="">Select {field.label}</option>
+                      {field.options?.map(opt => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : field.type === 'checkbox' ? (
+                    <input
+                      type="checkbox"
+                      id={field.name}
+                      name={field.name}
+                      checked={formData[field.name] || false}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    <input
+                      type={field.type}
+                      id={field.name}
+                      name={field.name}
+                      value={formData[field.name] || ''}
+                      onChange={handleChange}
+                      required={field.required}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
           ))}
           
