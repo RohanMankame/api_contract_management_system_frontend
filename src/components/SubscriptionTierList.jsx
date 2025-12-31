@@ -1,7 +1,8 @@
-// src/components/SubscriptionTierList.jsx
 import React, { useState } from 'react';
 import { SubscriptionTierItem } from './SubscriptionTierItem';
 import { EntityModal } from './EntityModal';
+import { useApi } from '../hooks/useApi';
+import '../styles/components/SubscriptionTierList.css';
 
 export function SubscriptionTierList({ 
   subscriptionId,
@@ -13,6 +14,7 @@ export function SubscriptionTierList({
   onDeleteTier
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
+  const { post } = useApi();
 
   const formFields = [
     { name: 'min_calls', label: 'Min Calls', type: 'number', required: true },
@@ -24,12 +26,13 @@ export function SubscriptionTierList({
   ];
 
   const handleAddTier = async (formData) => {
-    try {
-      await onAddTier(subscriptionId, formData);
-      setShowAddModal(false);
-    } catch (err) {
-      console.error('Error adding tier:', err);
-    }
+    const dataWithSubscriptionId = {
+      ...formData,
+      subscription_id: subscriptionId
+    };
+    await post('/subscription-tiers', dataWithSubscriptionId);
+    setShowAddModal(false);
+    onAddTier();
   };
 
   return (

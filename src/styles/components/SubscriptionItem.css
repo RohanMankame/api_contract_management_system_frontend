@@ -16,7 +16,7 @@
   align-items: center;
   padding: 16px 20px;
   cursor: pointer;
-  background: var(--color-bg-light);
+  background: var(--color-bg-dark);
   user-select: none;
   transition: background-color 0.2s;
 }
@@ -73,7 +73,8 @@
 .subscription-content {
   padding: 16px 20px;
   border-top: 1px solid var(--color-border-light);
-  background: rgba(0, 0, 0, 0.01);
+  background: rgba(0, 0, 0, 0);
+  
 }
 
 .subscription-details {

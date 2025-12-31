@@ -1,26 +1,29 @@
+/* src/styles/components/SubscriptionTierItem.css */
 @import '../colors.css';
 @import '../typography.css';
 
 .tier-container {
   background: var(--color-bg-white);
-  border: 1px solid #e8e8e8;
-  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
   overflow: hidden;
-  margin-left: 16px;
+  margin-bottom: 8px;
+  margin-left: 12px;
 }
 
 .tier-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 14px 16px;
   cursor: pointer;
-  transition: background-color 0.2s;
   background: #fafafa;
+  user-select: none;
+  transition: background-color 0.2s;
 }
 
 .tier-header:hover {
-  background: #f5f5f5;
+  background: #f0f0f0;
 }
 
 .tier-title-section {
@@ -31,17 +34,22 @@
 }
 
 .expand-icon {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-text-gray);
   transition: transform 0.3s;
   display: inline-flex;
   align-items: center;
+  flex-shrink: 0;
+}
+
+.expand-icon.expanded {
+  transform: rotate(180deg);
 }
 
 .tier-title-content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .tier-date-range {
@@ -52,23 +60,20 @@
 
 .tier-price {
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   color: var(--color-primary);
-  padding: 2px 8px;
-  background: rgba(39, 174, 96, 0.1);
-  border-radius: 4px;
 }
 
 .tier-content {
-  padding: 12px 16px;
-  border-top: 1px solid #e8e8e8;
-  background: rgba(0, 0, 0, 0.005);
+  padding: 14px 16px;
+  border-top: 1px solid var(--color-border-light);
+  background: rgba(0, 0, 0, 0.01);
 }
 
 .tier-details {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
 }
 
@@ -79,32 +84,34 @@
 }
 
 .detail-row .label {
-  font-size: 11px;
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-gray);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
 .detail-row .value {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   color: var(--color-text-dark);
   word-break: break-word;
 }
 
 .tier-actions {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   justify-content: flex-end;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border-light);
 }
 
 .btn-edit-tier {
-  padding: 6px 12px;
   background: var(--color-primary);
   color: white;
+  padding: 8px 16px;
   border: none;
-  border-radius: 4px;
-  font-size: 12px;
+  border-radius: 6px;
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all 0.2s;
