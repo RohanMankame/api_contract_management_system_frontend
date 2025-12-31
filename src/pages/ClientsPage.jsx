@@ -14,14 +14,17 @@ export function ClientsPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
 
+  // Fetch clients on component mount
   useEffect(() => {
     get('/clients');
   }, []);
 
+  // Safely extract clients array
   const clients = (response && response.data && Array.isArray(response.data.clients)) 
     ? response.data.clients 
     : [];
 
+    // ag-grid column definitions
   const columnDefs = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'company_name', headerName: 'Company', flex: 2 },
@@ -29,8 +32,10 @@ export function ClientsPage() {
     { field: 'phone_number', headerName: 'Phone', flex: 1.5 },
     { field: 'address', headerName: 'Address', flex: 2 },
     { field: 'created_at', headerName: 'Created', flex: 1 },
+    { field: 'updated_at', headerName: 'Updated', flex: 1 },
   ];
 
+  // input fields for add/edit modals
   const formFields = [
     { name: 'company_name', label: 'Company Name', type: 'text', required: true },
     { name: 'email', label: 'Email', type: 'email', required: true },
@@ -38,6 +43,7 @@ export function ClientsPage() {
     { name: 'address', label: 'Address', type: 'textarea', required: true },
   ];
 
+  // ag-grid quick filter search
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchText(value);
@@ -46,43 +52,39 @@ export function ClientsPage() {
     }
   };
 
+  // ag-grid onGridReady
   const handleGridReady = (params) => {
     gridApiRef.current = params.api;
   };
 
+  // Handle row double click to open edit modal
   const handleRowDoubleClick = (event) => {
     setSelectedClient(event.data);
     setShowEditModal(true);
   };
 
+  
+  // Handle add client
   const handleAddClient = async (formData) => {
-  try {
-    await post('/clients', formData);
+    await post('/clients', formData);  
     setShowAddModal(false);
     get('/clients');
-  } catch (err) {
-    throw err;
-  }
 };
 
+
+// Handle edit client
 const handleEditClient = async (formData) => {
-  try {
-    await put(`/clients/${selectedClient.id}`, formData);
-    setShowEditModal(false);
-    get('/clients');
-  } catch (err) {
-    throw err;
-  }
+  await put(`/clients/${selectedClient.id}`, formData); 
+  setShowEditModal(false);
+  get('/clients');
 };
 
+
+// Handle delete client
 const handleDeleteClient = async (clientId) => {
-  try {
-    await deleteRequest(`/clients/${clientId}`);
-    setShowEditModal(false);
-    get('/clients');
-  } catch (err) {
-    throw err;
-  }
+  await deleteRequest(`/clients/${clientId}`);
+  setShowEditModal(false);
+  get('/clients');
 };
 
   return (

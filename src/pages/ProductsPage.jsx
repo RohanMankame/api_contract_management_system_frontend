@@ -14,14 +14,17 @@ export function ProductsPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  // Fetch products on component mount
   useEffect(() => {
     get('/products');
   }, []);
 
+  // Safely extract products array
   const products = (response && response.data && Array.isArray(response.data.products)) 
     ? response.data.products 
     : [];
 
+  // ag-grid column definitions
   const columnDefs = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'api_name', headerName: 'Name', flex: 2 },
@@ -30,11 +33,13 @@ export function ProductsPage() {
     { field: 'updated_at', headerName: 'Updated', flex: 1 },
   ];
 
+  // input fields for add/edit modals
   const formFields = [
     { name: 'api_name', label: 'Product Name', type: 'text', required: true },
     { name: 'description', label: 'Description', type: 'textarea', required: true },
   ];
 
+  // ag-grid quick filter search
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchText(value);
@@ -43,42 +48,34 @@ export function ProductsPage() {
     }
   };
 
+  // ag-grid onGridReady
   const handleGridReady = (params) => {
     gridApiRef.current = params.api;
   };
 
+  // Handle row double click to open edit modal
   const handleRowDoubleClick = (event) => {
     setSelectedProduct(event.data);
     setShowEditModal(true);
   };
 
+  // Handle add product
   const handleAddProduct = async (formData) => {
-  
-  try {
     await post('/products', formData);
-    
     setShowAddModal(false);
     get('/products');
-  } catch (err) {
-    
-    throw err;
-  }
-};
+  };
 
+  // Handle edit product
   const handleEditProduct = async (formData) => {
-    try {
     await put(`/products/${selectedProduct.id}`, formData);
     setShowEditModal(false);
     get('/products');
-  } catch (err) {
-    throw err;
-  }
-};
+  };
 
+  // Handle delete product
   const handleDeleteProduct = async (productId) => {
-    // Don't use try-catch here - let the modal handle errors
     await deleteRequest(`/products/${productId}`);
-    // Only close modal and refresh if successful (no error thrown)
     setShowEditModal(false);
     get('/products');
   };

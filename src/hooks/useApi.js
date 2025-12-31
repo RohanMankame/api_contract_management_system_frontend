@@ -2,11 +2,13 @@
 import { useCallback, useState } from 'react';
 import apiClient from '../services/api.client';
 
+// Custom hook for API interactions
 export function useApi() {
   const [data, setData] = useState(null);          
   const [isLoading, setIsLoading] = useState(false); 
   const [error, setError] = useState(null);        
 
+  
   const request = useCallback(async (config) => {
     setIsLoading(true);
     setError(null);
