@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import { EditEntityModal } from './EditEntityModal';
 import '../styles/components/ContractInfoCard.css';
 
@@ -92,4 +92,4 @@ export function ContractInfoCard({ contract, clients, onEditSubmit, onDelete }) 
       />
     </>
   );
-}
+} */

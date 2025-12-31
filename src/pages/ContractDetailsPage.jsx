@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+/* import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/PageLayout';
 import { ContractInfoCard } from '../components/ContractInfoCard';
@@ -302,4 +302,4 @@ export function ContractDetailsPage() {
       </div>
     </PageLayout>
   );
-}
+} */

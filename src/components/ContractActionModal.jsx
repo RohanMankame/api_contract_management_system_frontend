@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+/* import { useState, useEffect } from 'react';
 import '../styles/components/ContractActionModal.css';
 
 export function ContractActionModal({ isOpen, contract, onEdit, onDelete, onClose }) {
@@ -79,4 +79,4 @@ export function ContractActionModal({ isOpen, contract, onEdit, onDelete, onClos
       </div>
     </div>
   );
-}
+} */
