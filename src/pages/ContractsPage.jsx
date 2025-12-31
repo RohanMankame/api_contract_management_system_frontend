@@ -17,7 +17,7 @@ export function ContractsPage() {
   const [selectedContract, setSelectedContract] = useState(null);
   const [clients, setClients] = useState([]);
 
-  // Load contracts and clients on mount
+ 
   useEffect(() => {
     const loadData = async () => {
       try {
