@@ -17,15 +17,13 @@ export function ContractsPage() {
   const [selectedContract, setSelectedContract] = useState(null);
   const [clients, setClients] = useState([]);
 
- 
+  // Fetch clients and contracts on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Fetch clients first
         const clientsResponse = await get('/clients');
-        console.log('Clients Response:', clientsResponse);
         
-        // Check different possible response structures
+        // Safely extract clients array
         let clientsData = [];
         if (clientsResponse && clientsResponse.data && Array.isArray(clientsResponse.data.clients)) {
           clientsData = clientsResponse.data.clients;
@@ -35,7 +33,6 @@ export function ContractsPage() {
           clientsData = clientsResponse;
         }
         
-        console.log('Extracted clients:', clientsData);
         setClients(clientsData);
         
         // Fetch contracts
@@ -48,10 +45,12 @@ export function ContractsPage() {
     loadData();
   }, []);
 
-  const contracts = (response && response.data && response.data.contracts && Array.isArray(response.data.contracts)) 
+  // Safely extract contracts array
+  const contracts = (response && response.data && Array.isArray(response.data.contracts)) 
     ? response.data.contracts 
     : [];
 
+  // ag-grid column definitions
   const columnDefs = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'contract_name', headerName: 'Contract Name', flex: 2 },
@@ -62,7 +61,7 @@ export function ContractsPage() {
     { field: 'updated_at', headerName: 'Updated', flex: 1 },
   ];
 
-  // use clients data
+  // input fields for add modal
   const formFields = [
     { 
       name: 'client_id', 
@@ -76,6 +75,7 @@ export function ContractsPage() {
     { name: 'end_date', label: 'End Date', type: 'date', required: true },
   ];
 
+  // ag-grid quick filter search
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchText(value);
@@ -84,55 +84,31 @@ export function ContractsPage() {
     }
   };
 
+  // ag-grid onGridReady
   const handleGridReady = (params) => {
     gridApiRef.current = params.api;
   };
 
+  // Handle row double click to open action modal
   const handleRowDoubleClick = (event) => {
     setSelectedContract(event.data);
     setShowActionModal(true);
   };
 
+  // Handle add contract
   const handleAddContract = async (formData) => {
-    try {
-      // Validate client_id is not empty
-      if (!formData.client_id || formData.client_id === '') {
-        console.error('client_id is required and cannot be empty');
-        alert('Please select a client');
-        return;
-      }
-
-      const dataToSubmit = {
-        client_id: formData.client_id,
-        contract_name: formData.contract_name,
-        start_date: formData.start_date,
-        end_date: formData.end_date
-      };
-      
-      console.log('Submitting contract:', dataToSubmit);
-      await post('/contracts', dataToSubmit);
-      setShowAddModal(false);
-      get('/contracts');
-    } catch (err) {
-      console.error('Error adding contract:', err);
-    }
+    await post('/contracts', formData);
+    setShowAddModal(false);
+    get('/contracts');
   };
 
+  // Handle edit contract - navigate to details page
   const handleEditContract = () => {
-    setShowActionModal(false);
-    navigate(`/contracts/${selectedContract.id}`);
-  };
+  setShowActionModal(false);
+  navigate(`/contracts/${selectedContract.id}`);
+};
 
-  const handleDeleteContract = async () => {
-    try {
-      await deleteRequest(`/contracts/${selectedContract.id}`);
-      setShowActionModal(false);
-      setSelectedContract(null);
-      get('/contracts');
-    } catch (err) {
-      console.error('Error deleting contract:', err);
-    }
-  };
+  // Removed DELETE 
 
   const handleCloseActionModal = () => {
     setShowActionModal(false);
@@ -147,7 +123,7 @@ export function ContractsPage() {
             <div>
               <h2>Contracts</h2>
               <p>Manage your API contracts and agreements</p>
-              <p>Double click a contract to edit or delete it.</p>
+              <p>Double click a contract to view, edit, or delete it.</p>
             </div>
             <button onClick={() => setShowAddModal(true)} className="btn-add-contract">
               + Add Contract
@@ -183,7 +159,7 @@ export function ContractsPage() {
           isOpen={showActionModal}
           contract={selectedContract}
           onEdit={handleEditContract}
-          onDelete={handleDeleteContract}
+          //onDelete={handleDeleteContract}
           onClose={handleCloseActionModal}
         />
       </div>
