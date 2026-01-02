@@ -58,9 +58,15 @@ export function SubscriptionItem({
   };
 
   const handleEditSubmit = async (formData) => {
+    // UUID validation 
+    const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+    if (formData.product_id && !uuidRegex.test(formData.product_id)) {
+      throw new Error('product_id must be a valid UUID');
+    }
+
     const submitData = {
       ...formData,
-      product_id: parseInt(formData.product_id, 10)
+      product_id: formData.product_id // UUID string
     };
     await put(`/subscriptions/${subscription.id}`, submitData);
     const subscriptionResponse = await get(`/subscriptions/${subscription.id}`);
