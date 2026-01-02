@@ -20,12 +20,13 @@ export function SubscriptionItem({
     return product ? product.api_name : productId;
   };
 
+ 
   const formFields = useMemo(() => [
     { 
       name: 'product_id', 
       label: 'Product', 
       type: 'select',
-      options: products.map(p => ({ value: p.id.toString(), label: p.api_name })),
+      options: products.map(p => ({ value: String(p.id), label: p.api_name })),
       required: true 
     },
     { 
@@ -42,31 +43,42 @@ export function SubscriptionItem({
       name: 'strategy', 
       label: 'Strategy', 
       type: 'select',
-      options: [
-        { value: 'Pick', label: 'Pick' },
-        { value: 'Fill', label: 'Fill' },
-        { value: 'Flat', label: 'Flat' },
-        { value: 'Fixed', label: 'Fixed' }
-      ],
+      //  dynamic options based on pricing_type
+      options: (formData) => {
+        if (formData.pricing_type === 'Fixed') {
+          return [{ value: 'Fixed', label: 'Fixed' }];
+        }
+        if (formData.pricing_type === 'Variable') {
+          // Variable options set to Pick, Fill, Flat
+          return [
+            { value: 'Pick', label: 'Pick' },
+            { value: 'Fill', label: 'Fill' },
+            { value: 'Flat', label: 'Flat' }
+          ];
+        }
+        // fallback
+        return [
+          { value: 'Pick', label: 'Pick' },
+          { value: 'Fill', label: 'Fill' },
+          { value: 'Flat', label: 'Flat' },
+          { value: 'Fixed', label: 'Fixed' }
+        ];
+      },
       required: true 
     },
   ], [products]);
 
   const subscriptionForModal = {
     ...subscription,
-    product_id: subscription.product_id.toString()
+    // ensure product_id passed to modal is a string
+    product_id: String(subscription.product_id)
   };
 
   const handleEditSubmit = async (formData) => {
-    // UUID validation 
-    const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-    if (formData.product_id && !uuidRegex.test(formData.product_id)) {
-      throw new Error('product_id must be a valid UUID');
-    }
-
+    
     const submitData = {
       ...formData,
-      product_id: formData.product_id // UUID string
+      product_id: formData.product_id 
     };
     await put(`/subscriptions/${subscription.id}`, submitData);
     const subscriptionResponse = await get(`/subscriptions/${subscription.id}`);
@@ -105,12 +117,13 @@ export function SubscriptionItem({
               ▼
             </span>
             <div className="subscription-title-content">
-              <h3>Subscription {subscription.id}</h3>
+              
               <span className="subscription-product-name">{getProductName(subscription.product_id)}</span>
+              
             </div>
           </div>
-          <span className="subscription-pricing">
-            {subscription.pricing_type}
+          <span className="subscription-note">
+            Subscription: {subscription.id}
           </span>
         </div>
 

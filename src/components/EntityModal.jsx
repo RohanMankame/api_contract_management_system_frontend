@@ -6,12 +6,28 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
+  // handleChange normalizes dependent select fields whose options are functions
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    setFormData(prev => {
+      const next = {
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      };
+
+      
+      fields.forEach(f => {
+        if (f.type === 'select' && typeof f.options === 'function') {
+          const opts = f.options(next) || [];
+          const optValues = opts.map(o => String(o.value));
+          if (next[f.name] && !optValues.includes(String(next[f.name]))) {
+            next[f.name] = opts[0]?.value ?? '';
+          }
+        }
+      });
+
+      return next;
+    });
   };
 
   // Handle form submission
@@ -88,6 +104,7 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
               {groupedFieldsList.map(field => (
                 <div key={field.name} className="form-group">
                   <label htmlFor={field.name}>{field.label}</label>
+
                   {field.type === 'textarea' ? (
                     <textarea
                       id={field.name}
@@ -98,20 +115,26 @@ export function EntityModal({ isOpen, title, fields, onSubmit, onClose }) {
                       rows="4"
                     />
                   ) : field.type === 'select' ? (
-                    <select
-                      id={field.name}
-                      name={field.name}
-                      value={formData[field.name] || ''}
-                      onChange={handleChange}
-                      required={field.required}
-                    >
-                      <option value="">Select {field.label}</option>
-                      {field.options?.map(opt => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
+                    // resolve dynamic options (function or array)
+                    (() => {
+                      const opts = typeof field.options === 'function' ? field.options(formData) : field.options || [];
+                      return (
+                        <select
+                          id={field.name}
+                          name={field.name}
+                          value={formData[field.name] || ''}
+                          onChange={handleChange}
+                          required={field.required}
+                        >
+                          <option value="">Select {field.label}</option>
+                          {opts.map(opt => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ))}
+                        </select>
+                      );
+                    })()
                   ) : field.type === 'checkbox' ? (
                     <input
                       type="checkbox"

@@ -20,7 +20,8 @@ export function SubscriptionList({
       name: 'product_id', 
       label: 'Product', 
       type: 'select',
-      options: products.map(p => ({ value: p.id, label: p.api_name })),
+      //  ensure product ids are strings (server-provided)
+      options: products.map(p => ({ value: String(p.id), label: p.api_name })),
       required: true 
     },
     { 
@@ -37,12 +38,26 @@ export function SubscriptionList({
       name: 'strategy', 
       label: 'Strategy', 
       type: 'select',
-      options: [
-        { value: 'Pick', label: 'Pick' },
-        { value: 'Fill', label: 'Fill' },
-        { value: 'Flat', label: 'Flat' },
-        { value: 'Fixed', label: 'Fixed' }
-      ],
+      // strategy depend on current pricing_type
+      options: (formData) => {
+        if (formData.pricing_type === 'Fixed') {
+          return [{ value: 'Fixed', label: 'Fixed' }];
+        }
+        if (formData.pricing_type === 'Variable') {
+          return [
+            { value: 'Pick', label: 'Pick' },
+            { value: 'Fill', label: 'Fill' },
+            { value: 'Flat', label: 'Flat' }
+          ];
+        }
+        // fallback
+        return [
+          { value: 'Pick', label: 'Pick' },
+          { value: 'Fill', label: 'Fill' },
+          { value: 'Flat', label: 'Flat' },
+          { value: 'Fixed', label: 'Fixed' }
+        ];
+      },
       required: true 
     },
   ], [products]);
