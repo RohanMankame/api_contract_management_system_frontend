@@ -4,41 +4,41 @@ import { EntityModal } from './EntityModal';
 import { useApi } from '../hooks/useApi';
 import '../styles/components/SubscriptionList.css';
 
-export function SubscriptionList({ 
-  subscriptions, 
-  expandedSubscriptions, 
-  onToggleExpand,
+export function SubscriptionList({
+  subscriptions = [],
   products,
   contractId,
   onSubscriptionsUpdate
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
+
+  // avoid relying on parent props
+  const [expandedSubscriptions, setExpandedSubscriptions] = useState(new Set());
+
   const { post } = useApi();
 
   const formFields = useMemo(() => [
-    { 
-      name: 'product_id', 
-      label: 'Product', 
+    {
+      name: 'product_id',
+      label: 'Product',
       type: 'select',
-      //  ensure product ids are strings (server-provided)
       options: products.map(p => ({ value: String(p.id), label: p.api_name })),
-      required: true 
+      required: true
     },
-    { 
-      name: 'pricing_type', 
-      label: 'Pricing Type', 
+    {
+      name: 'pricing_type',
+      label: 'Pricing Type',
       type: 'select',
       options: [
         { value: 'Fixed', label: 'Fixed' },
         { value: 'Variable', label: 'Variable' }
       ],
-      required: true 
+      required: true
     },
-    { 
-      name: 'strategy', 
-      label: 'Strategy', 
+    {
+      name: 'strategy',
+      label: 'Strategy',
       type: 'select',
-      // strategy depend on current pricing_type
       options: (formData) => {
         if (formData.pricing_type === 'Fixed') {
           return [{ value: 'Fixed', label: 'Fixed' }];
@@ -58,14 +58,27 @@ export function SubscriptionList({
           { value: 'Fixed', label: 'Fixed' }
         ];
       },
-      required: true 
+      required: true
     },
   ], [products]);
 
   const handleAddSubscription = async (formData) => {
-    await post(`/contracts/${contractId}/subscriptions`, formData);
-    setShowAddModal(false);
-    onSubscriptionsUpdate();
+    try {
+      await post(`/contracts/${contractId}/subscriptions`, formData);
+      setShowAddModal(false);
+      onSubscriptionsUpdate && onSubscriptionsUpdate();
+    } catch (err) {
+      console.error('Error adding subscription', err);
+    }
+  };
+
+  const handleToggleExpand = (subscriptionId) => {
+    setExpandedSubscriptions(prev => {
+      const next = new Set(prev);
+      if (next.has(subscriptionId)) next.delete(subscriptionId);
+      else next.add(subscriptionId);
+      return next;
+    });
   };
 
   return (
@@ -73,7 +86,7 @@ export function SubscriptionList({
       <div className="subscriptions-section">
         <div className="subscriptions-header">
           <h2>Subscriptions ({subscriptions.length})</h2>
-          <button 
+          <button
             onClick={() => setShowAddModal(true)}
             className="btn-add-subscription"
           >
@@ -88,7 +101,7 @@ export function SubscriptionList({
                 key={subscription.id}
                 subscription={subscription}
                 isExpanded={expandedSubscriptions.has(subscription.id)}
-                onToggleExpand={onToggleExpand}
+                onToggleExpand={handleToggleExpand}
                 products={products}
                 onSubscriptionUpdate={onSubscriptionsUpdate}
               />
