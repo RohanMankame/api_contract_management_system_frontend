@@ -7,6 +7,7 @@ import { ProductsPage } from './pages/ProductsPage';
 import { ClientsPage } from './pages/ClientsPage';
 import { ContractsPage } from './pages/ContractsPage';
 import { ContractDetailsPage } from './pages/ContractDetailsPage';
+import { UserSettingsPage } from './pages/UserSettingsPage';
 import './styles/App.css';
 
 function App() {
@@ -55,6 +56,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ContractDetailsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <UserSettingsPage />
               </ProtectedRoute>
             }
           />

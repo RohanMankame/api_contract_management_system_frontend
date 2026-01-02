@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DashboardIcon, ProductsIcon, ClientsIcon, ContractsIcon } from './Icons';
+import { DashboardIcon, ProductsIcon, ClientsIcon, ContractsIcon, SettingsIcon } from './Icons';
 import '../styles/components/Sidebar.css';
 
 export function Sidebar() {
@@ -52,6 +52,18 @@ export function Sidebar() {
           </button>
         ))}
       </nav>
+
+      
+      <div className="sidebar-footer">
+        <button
+          onClick={() => navigate('/settings')}
+          className="sidebar-item settings-item"
+          title="Settings"
+        >
+          <div className="sidebar-icon"><SettingsIcon /></div>
+          <span>Settings</span>
+        </button>
+      </div>
     </aside>
   );
 }

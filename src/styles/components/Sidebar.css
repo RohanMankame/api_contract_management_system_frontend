@@ -14,6 +14,8 @@
   overflow-y: auto;
   overflow-x: hidden;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -33,6 +35,13 @@
   flex-direction: column;
   padding: 0;
   margin: 0;
+  flex: 1;
+}
+
+.sidebar-footer {
+  padding: 8px 0;
+  border-top: 1px solid var(--color-border-light);
+  margin-top: auto;
 }
 
 .sidebar-item {
@@ -99,8 +108,7 @@
   color: var(--color-primary);
 }
 
-@media (max-width: 640px) {
-  .sidebar {
-    display: none;
-  }
+.settings-item {
+  border-top: 1px solid var(--color-border-light);
+  margin-top: auto;
 }
