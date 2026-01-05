@@ -4,10 +4,13 @@ import { DataTable } from '../components/DataTable';
 import { useApi } from '../hooks/useApi';
 import { EntityModal } from '../components/EntityModal';
 import { EditEntityModal } from '../components/EditEntityModal';
+import { useAuth } from '../hooks/useAuth';              // 🔧 added
+import { UserInfoCard } from '../components/UserInfoCard';// 🔧 added
 import '../styles/pages/UserSettingsPage.css';
 
 export function UserSettingsPage() {
   const { data: response, isLoading, error, get, post, put, delete: deleteRequest } = useApi();
+  const { user, isLoading: authLoading } = useAuth();    // 🔧 added
   const gridApiRef = useRef(null);
   const [searchText, setSearchText] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -15,8 +18,29 @@ export function UserSettingsPage() {
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
-    get('/users');
-  }, []);
+    // Only fetch users for admins
+    if (user?.role === 'admin') {
+      get('/users');
+    }
+  }, [get, user?.role]); // 🔧 changed
+
+  // If auth is still loading, show a simple loading state
+  if (authLoading) {
+    return (
+      <PageLayout>
+        <div className="users-container">Loading...</div>
+      </PageLayout>
+    );
+  }
+
+  // Non-admin users should see their UserInfo card instead of the table
+  if (!user || user.role !== 'admin') {
+    return (
+      <PageLayout>
+        <UserInfoCard />
+      </PageLayout>
+    );
+  }
 
   const users = (response && response.data && Array.isArray(response.data.users))
     ? response.data.users
@@ -52,7 +76,7 @@ export function UserSettingsPage() {
     },
   ];
 
-  // For edit, password is optional
+ 
   const editFormFields = addFormFields.map(f => f.name === 'password' ? { ...f, required: false } : f);
 
   const handleSearch = (e) => {
@@ -79,7 +103,7 @@ export function UserSettingsPage() {
   };
 
   const handleEditUser = async (formData) => {
-    // Don't send empty password on edit
+    
     if (!formData.password) {
       delete formData.password;
     }
@@ -104,6 +128,7 @@ export function UserSettingsPage() {
               <p>Manage your application users and roles</p>
               <p>Double click a user to edit or delete it.</p>
             </div>
+           
             <button onClick={() => setShowAddModal(true)} className="btn-add-user">
               + Add User
             </button>
