@@ -4,13 +4,13 @@ import { DataTable } from '../components/DataTable';
 import { useApi } from '../hooks/useApi';
 import { EntityModal } from '../components/EntityModal';
 import { EditEntityModal } from '../components/EditEntityModal';
-import { useAuth } from '../hooks/useAuth';              // 🔧 added
-import { UserInfoCard } from '../components/UserInfoCard';// 🔧 added
+import { useAuth } from '../hooks/useAuth';              
+import { UserInfoCard } from '../components/UserInfoCard';
 import '../styles/pages/UserSettingsPage.css';
 
 export function UserSettingsPage() {
   const { data: response, isLoading, error, get, post, put, delete: deleteRequest } = useApi();
-  const { user, isLoading: authLoading } = useAuth();    // 🔧 added
+  const { user, isLoading: authLoading } = useAuth();    
   const gridApiRef = useRef(null);
   const [searchText, setSearchText] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -22,9 +22,9 @@ export function UserSettingsPage() {
     if (user?.role === 'admin') {
       get('/users');
     }
-  }, [get, user?.role]); // 🔧 changed
+  }, [get, user?.role]);
 
-  // If auth is still loading, show a simple loading state
+  
   if (authLoading) {
     return (
       <PageLayout>

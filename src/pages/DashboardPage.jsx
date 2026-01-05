@@ -48,6 +48,14 @@ export function DashboardPage() {
               <ArrowIcon />
             </button>
           ))}
+        </div> 
+
+        
+        <div className="dashboard-placeholder">
+          <div className="placeholder-inner">
+            <h3>Overview</h3>
+            <p className="placeholder-muted">Placeholder.</p>
+          </div>
         </div>
       </div>
     </PageLayout>

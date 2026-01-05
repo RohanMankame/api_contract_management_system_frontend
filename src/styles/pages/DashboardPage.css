@@ -117,6 +117,32 @@
   height: 32px;
 }
 
+
+.dashboard-placeholder {
+  margin-top: 32px;
+  background: var(--color-bg-white);
+  border: 1px dashed var(--color-border-light);
+  border-radius: 8px;
+  padding: 28px;
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.dashboard-placeholder .placeholder-inner h3 {
+  margin: 0 0 8px;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-dark);
+}
+
+.dashboard-placeholder .placeholder-muted {
+  margin: 0;
+  color: var(--color-text-gray);
+  font-size: var(--font-size-sm);
+}
+
 @media (max-width: 640px) {
   .dashboard-container {
     padding: 20px;
@@ -133,5 +159,10 @@
 
   .dashboard-card {
     padding: 24px 16px;
+  }
+
+  .dashboard-placeholder {
+    padding: 20px;
+    min-height: 140px;
   }
 }
