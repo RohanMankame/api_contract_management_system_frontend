@@ -104,6 +104,12 @@ export function UserInfoCard() {
                 <p>{new Date(userData.updated_at).toLocaleDateString()}</p>
               </div>
             )}
+            {userData.updated_at && (
+              <div className="info-item">
+                <label>Role</label>
+                <p>{userData.role || 'N/A'}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
