@@ -7,6 +7,12 @@
   overflow: hidden;
 }
 
+.data-table-grid {
+  height: 60vh;        
+  min-height: 300px;
+  width: 100%;
+}
+
 .data-table-loading,
 .data-table-error {
   padding: 40px;
@@ -23,4 +29,34 @@
   --ag-foreground-color: var(--color-text-dark);
   --ag-header-background-color: var(--color-bg-light);
   --ag-border-color: var(--color-border-light);
+}
+
+
+.data-table-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-top:8px ;
+  align-items: center;
+  justify-content: flex-end;
+
+}
+.export-btn {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.export-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+
+@media (max-width: 640px) {
+  .data-table-export-actions {
+    right: 8px;
+    bottom: 72px;
+    gap: 6px;
+  }
 }

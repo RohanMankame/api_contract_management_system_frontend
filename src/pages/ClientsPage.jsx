@@ -119,6 +119,7 @@ const handleDeleteClient = async (clientId) => {
           columnDefs={columnDefs}
           paginationPageSize={10}
           onRowDoubleClick={handleRowDoubleClick}
+          exportFileName="clients"
         />
         <EntityModal
           isOpen={showAddModal}

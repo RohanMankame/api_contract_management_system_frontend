@@ -147,6 +147,7 @@ export function ContractsPage() {
           columnDefs={columnDefs}
           paginationPageSize={10}
           onRowDoubleClick={handleRowDoubleClick}
+          exportFileName="contracts"
         />
         <EntityModal
           isOpen={showAddModal}

@@ -112,6 +112,8 @@ export function ProductsPage() {
           columnDefs={columnDefs}
           paginationPageSize={10}
           onRowDoubleClick={handleRowDoubleClick}
+          exportFileName="products"
+          
         />
         <EntityModal
           isOpen={showAddModal}
