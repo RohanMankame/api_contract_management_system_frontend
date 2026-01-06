@@ -10,6 +10,30 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 const myTheme = themeQuartz
   .withPart(iconSetQuartzLight)
   .withParams({
+    accentColor: "#52CC47",
+    backgroundColor: "#FFFFFF",
+    borderColor: "#1D7D45",
+    borderRadius: 5,
+    browserColorScheme: "light",
+    columnBorder: false,
+    fontFamily: {
+      googleFont: "var(--fontFamily)"
+    },
+    fontSize: 16,
+    foregroundColor: "rgb(46, 55, 66)",
+    headerBackgroundColor: "#1D7C44",
+    headerFontFamily: {
+      googleFont: "var(--fontFamily)"
+    },
+    headerFontSize: 14,
+    headerFontWeight: 700,
+    headerTextColor: "#FFFFFF",
+    oddRowBackgroundColor: "#F9FAFB",
+    rowBorder: true,
+    sidePanelBorder: true,
+    spacing: 8,
+    wrapperBorder: true,
+    wrapperBorderRadius: 8
   });
 
 export function DataTable({
