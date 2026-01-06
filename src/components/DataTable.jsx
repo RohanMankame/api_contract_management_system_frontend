@@ -3,7 +3,7 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import '../styles/components/DataTable.css';
 import * as XLSX from 'xlsx';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -22,7 +22,11 @@ export function DataTable({
   onGridReady,
   onRowDoubleClick,
   exportFileName = 'data-export', 
+  
 }) {
+
+  const [searchText, setSearchText] = useState('');
+
   const gridApiRef = useRef(null);
 
   if (isLoading) return <div className="data-table-loading">Loading...</div>;
@@ -55,6 +59,9 @@ export function DataTable({
     return rows;
   };
 
+
+  
+
   const exportCSV = () => {
     const rows = getExportRows();
     const ws = XLSX.utils.json_to_sheet(rows);
@@ -71,26 +78,45 @@ export function DataTable({
     XLSX.writeFile(wb, `${exportFileName}.xlsx`);
   };
 
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchText(value);
+    if (gridApiRef.current) {
+      gridApiRef.current.setGridOption('quickFilterText', value);
+    }
+  };
+
   return (
     <div>
-    <div className={`data-table-container ${className}`}>
-      <AgGridReact
-        onGridReady={handleGridReady}
-        onRowDoubleClicked={onRowDoubleClick}
-        rowData={rowData}
-        columnDefs={columnDefs}
-        theme={myTheme}
-        pagination={true}
-        paginationPageSize={paginationPageSize}
-        paginationPageSizeSelector={[10, 20, 50, 100]}
-        suppressMovableColumns={false}
-        defaultColDef={{
-          sortable: true,
-          filter: true,
-          resizable: true,
-        }}
-      />
-    </div>
+      <div className="search-area">
+            <input
+              type="text"
+              placeholder={`Search ${exportFileName}`}
+              value={searchText}
+              onChange={handleSearch}
+              className="search-input"
+            />
+      </div>
+
+      <div className={`data-table-container ${className}`}>
+        <AgGridReact
+          onGridReady={handleGridReady}
+          onRowDoubleClicked={onRowDoubleClick}
+          rowData={rowData}
+          columnDefs={columnDefs}
+          theme={myTheme}
+          pagination={true}
+          paginationPageSize={paginationPageSize}
+          paginationPageSizeSelector={[10, 20, 50, 100]}
+          suppressMovableColumns={false}
+          defaultColDef={{
+            sortable: true,
+            filter: true,
+            resizable: true,
+          }}
+        />
+      </div>
 
     <div className="data-table-toolbar">
         <button className="btn export-btn" onClick={exportCSV}>Export CSV</button>

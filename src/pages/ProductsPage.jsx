@@ -9,7 +9,7 @@ import '../styles/pages/ProductsPage.css';
 export function ProductsPage() {
   const { data: response, isLoading, error, get, post, put, delete: deleteRequest } = useApi();
   const gridApiRef = useRef(null);
-  const [searchText, setSearchText] = useState('');
+  /* const [searchText, setSearchText] = useState(''); */
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -40,13 +40,13 @@ export function ProductsPage() {
   ];
 
   // ag-grid quick filter search
-  const handleSearch = (e) => {
+  /* const handleSearch = (e) => {
     const value = e.target.value;
     setSearchText(value);
     if (gridApiRef.current) {
       gridApiRef.current.setGridOption('quickFilterText', value);
     }
-  };
+  }; */
 
   // ag-grid onGridReady
   const handleGridReady = (params) => {
@@ -94,7 +94,7 @@ export function ProductsPage() {
               + Add Product
             </button>
           </div>
-          <div className="products-search">
+          {/* <div className="products-search">
             <input
               type="text"
               placeholder="Search products..."
@@ -102,7 +102,7 @@ export function ProductsPage() {
               onChange={handleSearch}
               className="search-input"
             />
-          </div>
+          </div> */}
         </div>
         <DataTable 
           onGridReady={handleGridReady}

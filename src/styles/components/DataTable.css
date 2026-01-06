@@ -53,6 +53,25 @@
 }
 
 
+.search-area {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+
+.search-input {
+  
+  border: 0.2rem solid var(--color-primary);
+  border-radius: 6px;
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+  max-width: 15rem;
+  background: var(--color-bg-light);
+  color: var(--color-text-dark);
+  font-weight: var(--font-weight-medium);
+}
+
+
 @media (max-width: 640px) {
   .data-table-export-actions {
     right: 8px;
