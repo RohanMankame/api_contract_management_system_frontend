@@ -11,7 +11,7 @@ export function ContractsPage() {
   const { data: response, isLoading, error, get, post, delete: deleteRequest } = useApi();
   const navigate = useNavigate();
   const gridApiRef = useRef(null);
-  const [searchText, setSearchText] = useState('');
+ 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showActionModal, setShowActionModal] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
@@ -75,14 +75,6 @@ export function ContractsPage() {
   { name: 'end_date', label: 'End Date', type: 'date', required: true, group: 'dates' },
 ];
 
-  // ag-grid quick filter search
-  const handleSearch = (e) => {
-    const value = e.target.value;
-    setSearchText(value);
-    if (gridApiRef.current) {
-      gridApiRef.current.setGridOption('quickFilterText', value);
-    }
-  };
 
   // ag-grid onGridReady
   const handleGridReady = (params) => {
@@ -108,7 +100,7 @@ export function ContractsPage() {
   navigate(`/contracts/${selectedContract.id}`);
 };
 
-  // Removed DELETE 
+ 
 
   const handleCloseActionModal = () => {
     setShowActionModal(false);
@@ -129,15 +121,7 @@ export function ContractsPage() {
               + Add Contract
             </button>
           </div>
-          <div className="contracts-search">
-            <input
-              type="text"
-              placeholder="Search contracts..."
-              value={searchText}
-              onChange={handleSearch}
-              className="search-input"
-            />
-          </div>
+          
         </div>
         <DataTable 
           onGridReady={handleGridReady}

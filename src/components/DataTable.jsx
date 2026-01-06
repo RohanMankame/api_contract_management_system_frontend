@@ -2,7 +2,6 @@ import { ModuleRegistry, AllCommunityModule, themeQuartz, iconSetQuartzLight } f
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import '../styles/components/DataTable.css';
-import * as XLSX from 'xlsx';
 import { useEffect, useRef, useState } from 'react';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -16,15 +15,11 @@ const myTheme = themeQuartz
     borderRadius: 5,
     browserColorScheme: "light",
     columnBorder: false,
-    fontFamily: {
-      googleFont: "var(--fontFamily)"
-    },
+    fontFamily: { googleFont: "var(--fontFamily)" },
     fontSize: 16,
     foregroundColor: "rgb(46, 55, 66)",
     headerBackgroundColor: "#1D7C44",
-    headerFontFamily: {
-      googleFont: "var(--fontFamily)"
-    },
+    headerFontFamily: { googleFont: "var(--fontFamily)" },
     headerFontSize: 14,
     headerFontWeight: 700,
     headerTextColor: "#FFFFFF",
@@ -45,13 +40,20 @@ export function DataTable({
   className = '',
   onGridReady,
   onRowDoubleClick,
-  exportFileName = 'data-export', 
-  
+  exportFileName = 'data-export',
+  quickFilterText,
+  onQuickFilterChange,
+  csvExportOptions = {}, 
 }) {
-
-  const [searchText, setSearchText] = useState('');
-
+  const [searchText, setSearchText] = useState(quickFilterText ?? '');
   const gridApiRef = useRef(null);
+
+  useEffect(() => {
+    if (quickFilterText !== undefined) {
+      setSearchText(quickFilterText);
+      if (gridApiRef.current) gridApiRef.current.setQuickFilter(quickFilterText);
+    }
+  }, [quickFilterText]);
 
   if (isLoading) return <div className="data-table-loading">Loading...</div>;
   if (error) return <div className="data-table-error">Error: {error}</div>;
@@ -63,93 +65,64 @@ export function DataTable({
     if (onGridReady) onGridReady(params);
   };
 
-  const getExportRows = () => {
-    const api = gridApiRef.current;
-    if (!api) return [];
-    const cols = (columnDefs || []).filter(c => c.field).map(c => ({
-      field: c.field,
-      header: c.headerName || c.field,
-    }));
-    const rows = [];
-    api.forEachNodeAfterFilterAndSort((node) => {
-      if (node.data) {
-        const row = {};
-        cols.forEach(col => {
-          row[col.header] = node.data[col.field];
-        });
-        rows.push(row);
-      }
-    });
-    return rows;
-  };
-
-
-  
-
-  const exportCSV = () => {
-    const rows = getExportRows();
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, `${exportFileName}.csv`);
-  };
-
-  const exportExcel = () => {
-    const rows = getExportRows();
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, `${exportFileName}.xlsx`);
-  };
-
-
   const handleSearch = (e) => {
     const value = e.target.value;
-    setSearchText(value);
-    if (gridApiRef.current) {
-      gridApiRef.current.setGridOption('quickFilterText', value);
-    }
+    if (onQuickFilterChange) onQuickFilterChange(value);
+    else setSearchText(value);
+    if (gridApiRef.current) gridApiRef.current.setQuickFilter(value);
+  };
+
+  const exportCSV = () => {
+    const gridApi = gridApiRef.current;
+    if (!gridApi) return;
+    gridApi.exportDataAsCsv({
+      fileName: `${exportFileName}.csv`,
+      allColumns: false,
+      ...csvExportOptions,
+    });
   };
 
   return (
-    <div>
-      <div className="search-area">
-            <input
-              type="text"
-              placeholder={`Search ${exportFileName}`}
-              value={searchText}
-              onChange={handleSearch}
-              className="search-input"
-            />
+    <div className={`data-table-wrapper ${className}`}>
+      <div className={`data-table-container ag-theme-quartz`}>
+        <div className="search-area">
+          <input
+            type="text"
+            placeholder={`Search ${exportFileName}`}
+            value={searchText}
+            onChange={handleSearch}
+            className="search-input"
+            aria-label={`Search ${exportFileName}`}
+          />
+        </div>
+
+        <div className="data-table-grid">
+          <AgGridReact
+            onGridReady={handleGridReady}
+            onRowDoubleClicked={onRowDoubleClick}
+            rowData={rowData}
+            columnDefs={columnDefs}
+            frameworkComponents={{}}
+            pagination={true}
+            paginationPageSize={paginationPageSize}
+            paginationPageSizeSelector={[10, 20, 50, 100]}
+            suppressMovableColumns={false}
+            defaultColDef={{
+              sortable: true,
+              filter: true,
+              resizable: true,
+            }}
+          />
+        </div>
       </div>
 
-      <div className={`data-table-container ${className}`}>
-        <AgGridReact
-          onGridReady={handleGridReady}
-          onRowDoubleClicked={onRowDoubleClick}
-          rowData={rowData}
-          columnDefs={columnDefs}
-          theme={myTheme}
-          pagination={true}
-          paginationPageSize={paginationPageSize}
-          paginationPageSizeSelector={[10, 20, 50, 100]}
-          suppressMovableColumns={false}
-          defaultColDef={{
-            sortable: true,
-            filter: true,
-            resizable: true,
-          }}
-        />
+      <div className="data-table-actions-row">
+        <div className="data-table-export-actions" role="group" aria-label="Export actions">
+          <button className="btn export-btn" onClick={exportCSV} aria-label="Export CSV">
+            Export CSV
+          </button>
+        </div>
       </div>
-
-    <div className="data-table-toolbar">
-        <button className="btn export-btn" onClick={exportCSV}>Export CSV</button>
-        <button className="btn export-btn" onClick={exportExcel}>Export Excel</button>
     </div>
-
-
-    </div>
-    
-    
   );
 }

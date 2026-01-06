@@ -71,6 +71,13 @@
   font-weight: var(--font-weight-medium);
 }
 
+.data-table-export-actions {
+  display: flex;
+  padding-top: 8px;
+  justify-content: flex-end;
+}
+
+
 
 @media (max-width: 640px) {
   .data-table-export-actions {

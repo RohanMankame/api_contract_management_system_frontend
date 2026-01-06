@@ -43,15 +43,6 @@ export function ClientsPage() {
     { name: 'address', label: 'Address', type: 'textarea', required: true },
   ];
 
-  // ag-grid quick filter search
-  const handleSearch = (e) => {
-    const value = e.target.value;
-    setSearchText(value);
-    if (gridApiRef.current) {
-      gridApiRef.current.setGridOption('quickFilterText', value);
-    }
-  };
-
   // ag-grid onGridReady
   const handleGridReady = (params) => {
     gridApiRef.current = params.api;
@@ -101,15 +92,7 @@ const handleDeleteClient = async (clientId) => {
               + Add Client
             </button>
           </div>
-          <div className="clients-search">
-            <input
-              type="text"
-              placeholder="Search clients..."
-              value={searchText}
-              onChange={handleSearch}
-              className="search-input"
-            />
-          </div>
+          
         </div>
         <DataTable 
           onGridReady={handleGridReady}
