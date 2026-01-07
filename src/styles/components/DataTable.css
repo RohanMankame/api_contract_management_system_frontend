@@ -13,6 +13,13 @@
   width: 100%;
 }
 
+.search-meta {
+  margin-left: 12px;
+  color: var(--color-text-gray);
+  font-size: 13px;
+  align-self: center;
+}
+
 .data-table-loading,
 .data-table-error {
   padding: 40px;

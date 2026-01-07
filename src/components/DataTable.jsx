@@ -43,15 +43,29 @@ export function DataTable({
   exportFileName = 'data-export',
   quickFilterText,
   onQuickFilterChange,
-  csvExportOptions = {}, 
+  csvExportOptions = {},
 }) {
   const [searchText, setSearchText] = useState(quickFilterText ?? '');
+  const [visibleCount, setVisibleCount] = useState(null);
   const gridApiRef = useRef(null);
 
+  // get the concrete API instance we need
+  const getApi = () => {
+    const g = gridApiRef.current;
+    if (!g) return null;
+    // the grid API may be the object itself
+    if (typeof g.getDisplayedRowCount === 'function') return g;
+    // or sometimes it is nested (safety)
+    if (g.api && typeof g.api.getDisplayedRowCount === 'function') return g.api;
+    if (g.gridApi && typeof g.gridApi.getDisplayedRowCount === 'function') return g.gridApi;
+    return null;
+  };
+
+  // if parent controls quickFilterText, reflect it locally
   useEffect(() => {
     if (quickFilterText !== undefined) {
       setSearchText(quickFilterText);
-      if (gridApiRef.current) gridApiRef.current.setQuickFilter(quickFilterText);
+      // visible count will be updated by onFilterChanged when grid processes quickFilterText
     }
   }, [quickFilterText]);
 
@@ -61,21 +75,25 @@ export function DataTable({
   const rowData = Array.isArray(data) ? data : [];
 
   const handleGridReady = (params) => {
-    gridApiRef.current = params.api;
+    // params.api should be the grid API
+    gridApiRef.current = params.api || params;
+    const api = getApi();
+    if (api) setVisibleCount(api.getDisplayedRowCount?.() ?? rowData.length);
     if (onGridReady) onGridReady(params);
   };
 
+  
   const handleSearch = (e) => {
     const value = e.target.value;
     if (onQuickFilterChange) onQuickFilterChange(value);
     else setSearchText(value);
-    if (gridApiRef.current) gridApiRef.current.setQuickFilter(value);
+ 
   };
 
   const exportCSV = () => {
-    const gridApi = gridApiRef.current;
-    if (!gridApi) return;
-    gridApi.exportDataAsCsv({
+    const api = getApi();
+    if (!api) { console.warn('export aborted: grid api not ready'); return; }
+    api.exportDataAsCsv({
       fileName: `${exportFileName}.csv`,
       allColumns: false,
       ...csvExportOptions,
@@ -94,6 +112,7 @@ export function DataTable({
             className="search-input"
             aria-label={`Search ${exportFileName}`}
           />
+          <span className="search-meta">Showing {visibleCount ?? rowData.length} rows</span>
         </div>
 
         <div className="data-table-grid">
@@ -102,6 +121,11 @@ export function DataTable({
             onRowDoubleClicked={onRowDoubleClick}
             rowData={rowData}
             columnDefs={columnDefs}
+            quickFilterText={searchText}            
+            onFilterChanged={() => {
+              const api = getApi();
+              setVisibleCount(api?.getDisplayedRowCount?.() ?? null);
+            }}
             frameworkComponents={{}}
             pagination={true}
             paginationPageSize={paginationPageSize}

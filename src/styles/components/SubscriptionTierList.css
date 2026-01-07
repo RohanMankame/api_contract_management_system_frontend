@@ -1,4 +1,3 @@
-/* src/styles/components/SubscriptionTierList.css */
 @import '../colors.css';
 @import '../typography.css';
 
@@ -33,16 +32,9 @@
   cursor: pointer;
   transition: all 0.2s;
 }
+.btn-add-tier:hover { background: #229d4e; }
 
-.btn-add-tier:hover {
-  background: #229d4e;
-}
-
-.tiers-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+.tiers-list { display: flex; flex-direction: column; gap: 8px; }
 
 .no-tiers {
   padding: 20px;
@@ -52,8 +44,107 @@
   border: 1px dashed var(--color-border-light);
   border-radius: 8px;
 }
+.no-tiers p { margin: 0; font-size: var(--font-size-sm); }
 
-.no-tiers p {
-  margin: 0;
-  font-size: var(--font-size-sm);
+.batch-row { border-bottom: 1px dashed rgba(0,0,0,0.06); padding: 6px 0; }
+
+/* Wider modal for batch add so the three inputs fit on one row */
+.modal-content.modal-wide { max-width: 920px; }
+
+/* Three columns layout */
+.batch-row .form-group-row.three-columns {
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Compact inline checkbox */
+.batch-row .form-group label.checkbox-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 6px;
+  font-size: 13px;
+  color: var(--color-text-dark);
+}
+.batch-row .form-group input.infinite-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #1D7C44;
+  cursor: pointer;
+}
+
+/* Make controls inline */
+.max-actions .max-row-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.max-actions .max-row-controls input[type="number"] {
+  width: 120px;
+  max-width: 35%;
+}
+
+/* Equal width for Min and Max inputs */
+.batch-row .form-group-row.three-columns .form-group:nth-child(1) input[type="number"],
+.batch-row .form-group-row.three-columns .form-group:nth-child(2) input[type="number"] {
+  width: 120px;
+  min-width: 80px;
+}
+
+/* Bottom-right action buttons */
+.row-actions-bottom-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+/* Buttons styling */
+.row-actions-bottom-right button {
+  width: 36px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Remove / minus button: red */
+.row-actions-bottom-right button.remove {
+  background: #fff;
+  color: #c62828;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.row-actions-bottom-right button.remove:hover { background: #ffebee; }
+
+/* Disabled state for remove button */
+.row-actions-bottom-right button.remove:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #fff;
+  color: rgba(0,0,0,0.3);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Add / plus button: green */
+.row-actions-bottom-right button.add {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+}
+.row-actions-bottom-right button.add:hover { opacity: 0.95; }
+
+/* Price input compacting and form spacing */
+.form-group { gap: 6px; }
+
+/* Responsive: wrap controls on small screens */
+@media (max-width: 640px) {
+  .max-actions .max-row-controls { flex-wrap: wrap; gap: 8px; }
+  .max-actions .max-row-controls input[type="number"] { width: 100%; max-width: none; }
+  .row-actions-bottom-right { justify-content: flex-start; gap: 8px; }
 }

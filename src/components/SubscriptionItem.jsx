@@ -165,6 +165,7 @@ export function SubscriptionItem({
               onAddTier={() => onSubscriptionUpdate()}
               onEditTier={() => onSubscriptionUpdate()}
               onDeleteTier={() => onSubscriptionUpdate()}
+              pricing_type={subscription.pricing_type}  
             />
           </div>
         )}

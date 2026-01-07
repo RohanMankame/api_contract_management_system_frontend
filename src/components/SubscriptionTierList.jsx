@@ -1,50 +1,30 @@
 import React, { useState } from 'react';
 import { SubscriptionTierItem } from './SubscriptionTierItem';
-import { EntityModal } from './EntityModal';
-import { useApi } from '../hooks/useApi';
+import BatchAddTiersModal from './BatchAddTiersModal';
 import '../styles/components/SubscriptionTierList.css';
 
-export function SubscriptionTierList({ 
+export function SubscriptionTierList({
   subscriptionId,
-  tiers, 
-  expandedTiers, 
+  tiers,
+  expandedTiers,
   onToggleExpand,
   onAddTier,
   onEditTier,
-  onDeleteTier
+  onDeleteTier,
+  pricing_type = 'Variable'
 }) {
-  const [showAddModal, setShowAddModal] = useState(false);
-  const { post } = useApi();
-
-  const formFields = [
-  { name: 'min_calls', label: 'Min Calls', type: 'number', required: true, group: 'calls' },
-  { name: 'max_calls', label: 'Max Calls', type: 'number', required: true, group: 'calls' },
-  { name: 'base_price', label: 'Base Price', type: 'number', required: true },
-  { name: 'price_per_tier', label: 'Price Per Tier', type: 'number', required: false },
-  { name: 'start_date', label: 'Start Date', type: 'date', required: true, group: 'dates' },
-  { name: 'end_date', label: 'End Date', type: 'date', required: false, group: 'dates' },
-];
-
-  const handleAddTier = async (formData) => {
-    const dataWithSubscriptionId = {
-      ...formData,
-      subscription_id: subscriptionId
-    };
-    await post('/subscription-tiers', dataWithSubscriptionId);
-    setShowAddModal(false);
-    onAddTier();
-  };
+  const [showBatchAddModal, setShowBatchAddModal] = useState(false);
 
   return (
     <>
       <div className="tiers-section">
         <div className="tiers-header">
           <h4>Tiers ({tiers.length})</h4>
-          <button 
-            onClick={() => setShowAddModal(true)}
+          <button
+            onClick={() => setShowBatchAddModal(true)}
             className="btn-add-tier"
           >
-            + Add Tier
+            + Add Tier(s)
           </button>
         </div>
 
@@ -68,12 +48,15 @@ export function SubscriptionTierList({
         </div>
       </div>
 
-      <EntityModal
-        isOpen={showAddModal}
-        title="Add Tier"
-        fields={formFields}
-        onSubmit={handleAddTier}
-        onClose={() => setShowAddModal(false)}
+      <BatchAddTiersModal
+        isOpen={showBatchAddModal}
+        onClose={() => setShowBatchAddModal(false)}
+        subscriptionId={subscriptionId}
+        pricingType={pricing_type}
+        onAdded={() => {
+          setShowBatchAddModal(false);
+          onAddTier();
+        }}
       />
     </>
   );

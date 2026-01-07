@@ -90,6 +90,23 @@
   color: var(--color-text-dark);
 }
 
+
+
+
+
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) !important; /* turns icon black */
+  opacity: 1 !important;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
 .form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="number"],
@@ -103,7 +120,8 @@
   font-family: inherit;
   transition: all 0.2s;
   background: var(--color-bg-white);
-  color: var(--color-text-dark);
+  color: black;
+
 }
 
 .form-group input[type="text"]:focus,
@@ -112,6 +130,7 @@
 .form-group input[type="date"]:focus,
 .form-group textarea:focus,
 .form-group select:focus {
+  
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
