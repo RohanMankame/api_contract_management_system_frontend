@@ -40,9 +40,9 @@
 /* Underline the header when the group is expanded */
 .rate-card-container.open .rate-card-toggle {
   border-bottom: 2px solid var(--color-primary);
-  /* optional subtle emphasis */
   box-shadow: 0 2px 0 rgba(0,0,0,0.02);
 }
+
 
 /* Smooth transition for the line */
 .rate-card-toggle {
@@ -165,9 +165,13 @@
   color: var(--color-text-dark);
 }
 
-/* price column right-align */
-.rate-row-price,
-.group-tier-row .rate-row-price { text-align: right; }
+
+.rate-row{
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+}
+
 
 /* align the edit button */
 .group-tier-actions { display:flex; justify-content:flex-end; align-items:center; }
@@ -199,3 +203,38 @@
 /* small expand icon tuning */
 .expand-icon { font-size: 12px; margin-left: 8px; }
 .expand-icon.expanded { transform: none; }
+
+/* Ensure containers and body fill available width */
+.rate-card-container,
+.rate-card,
+.rate-card-body,
+.group-body {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+/* Make grid columns reliably use available space and stay horizontal */
+.rate-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 180px 96px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+/* Ensure items inside the grid don't force min-width overflow */
+.rate-row-item,
+.rate-row-actions {
+  min-width: 0;
+}
+
+/* Keep edit button styled */
+.group-body .btn-edit-tier,
+.rate-card-body .btn-edit-tier {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+}

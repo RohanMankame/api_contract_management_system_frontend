@@ -2,88 +2,66 @@ import React from 'react';
 import '../styles/components/ContractInfoCard.css';
 import '../styles/components/SubscriptionTierList.css';
 
-export function RateCardInfo({ tier, grouped = false, pricingType = 'Variable', onEdit, onEditTier }) {
-  const formatMoney = (val) => {
-    if (val === null || val === undefined || val === '') return 'N/A';
-    return `$${parseFloat(val).toFixed(2)}`;
-  };
+/**
+ * RateCardInfo
+ * Renders a single grouped rate card (start → end) and its tiers.
+ *
+ * Props:
+ * - group: { start_date, end_date, tiers: [] }
+ * - pricingType: 'Fixed' | 'Variable'
+ * - onEditTier: function(tier) -> open edit modal
+ */
+export function RateCardInfo({ group, pricingType = 'Variable', onEditTier }) {
+  if (!group) return null;
 
-  // Grouped compact row (used inside grouped tabs)
-  if (grouped && tier) {
-    const priceDisplay =
-      pricingType === 'Fixed' ? formatMoney(tier.base_price) : (tier.price_per_tier ? formatMoney(tier.price_per_tier) : 'N/A');
+  const formatDate = (d) => (d ? new Date(d).toLocaleDateString() : 'N/A');
+  const formatMoney = (v) => (v == null || v === '' ? 'N/A' : `$${parseFloat(v).toFixed(2)}`);
+  const normalizeMax = (v) => (v === -1 || v === '-1' ? Infinity : Number(v ?? 0));
 
-    return (
-      <div className="group-tier-row">
-        <div className="group-info-item">
-          <label>Min Calls</label>
-          <p>{tier.min_calls}</p>
-        </div>
+  // Sort tiers: min_calls asc; break ties by max_calls (treat -1 as Infinity)
+  const sorted = [...group.tiers].sort((a, b) => {
+    const aMin = Number(a.min_calls ?? 0);
+    const bMin = Number(b.min_calls ?? 0);
+    if (aMin !== bMin) return aMin - bMin;
+    const aMax = normalizeMax(a.max_calls);
+    const bMax = normalizeMax(b.max_calls);
+    return aMax - bMax;
+  });
 
-        <div className="group-info-item">
-          <label>Max Calls</label>
-          <p>{tier.max_calls}</p>
-        </div>
+  const basePrice = group.tiers[0]?.base_price ?? null;
 
-        <div className="group-info-item rate-row-price">
-          <label>{pricingType === 'Fixed' ? 'Base Price' : 'Price Per Tier'}</label>
-          <p>{priceDisplay}</p>
-        </div>
+  return (
+    <div className="rate-card">
+      
 
-        <div className="group-tier-actions">
-          <button
-            className="btn-edit-tier"
-            onClick={() => (onEditTier ? onEditTier(tier) : onEdit && onEdit(tier))}
-          >
-            Edit
-          </button>
-        </div>
+      <div className="rate-card-body">
+        {sorted.map((t, i) => (
+          <React.Fragment key={t.id}>
+            <div className="rate-row">
+              <div className="rate-row-item">
+                <label>Min Calls</label>
+                <p>{t.min_calls}</p>
+              </div>
+
+              <div className="rate-row-item">
+                <label>Max Calls</label>
+                <p>{t.max_calls === -1 ? '∞' : t.max_calls}</p>
+              </div>
+
+              <div className="rate-row-item rate-row-price">
+                <label>{pricingType === 'Fixed' ? 'Base Price' : 'Price Per Tier'}</label>
+                <p>{pricingType === 'Fixed' ? formatMoney(t.base_price) : formatMoney(t.price_per_tier)}</p>
+              </div>
+
+              <div className="rate-row-actions">
+                <button className="btn-edit-tier" onClick={() => onEditTier && onEditTier(t)}>Edit</button>
+              </div>
+            </div>
+
+            {i < sorted.length - 1 && <hr className="group-separator" />}
+          </React.Fragment>
+        ))}
       </div>
-    );
-  }
-
-  // Backwards-compatible single-tier detailed view (unchanged)
-  if (tier) {
-    const formatDate = (dateString) => {
-      if (!dateString) return 'N/A';
-      return new Date(dateString).toLocaleDateString();
-    };
-
-    return (
-      <div className="tier-content">
-        <div className="tier-details">
-          <div className="detail-row">
-            <span className="label">Min Calls</span>
-            <span className="value">{tier.min_calls}</span>
-          </div>
-          <div className="detail-row">
-            <span className="label">Max Calls</span>
-            <span className="value">{tier.max_calls}</span>
-          </div>
-          <div className="detail-row">
-            <span className="label">Base Price</span>
-            <span className="value">{formatMoney(tier.base_price)}</span>
-          </div>
-          <div className="detail-row">
-            <span className="label">Price Per Tier</span>
-            <span className="value">{tier.price_per_tier ? formatMoney(tier.price_per_tier) : 'N/A'}</span>
-          </div>
-          <div className="detail-row">
-            <span className="label">Start Date</span>
-            <span className="value">{formatDate(tier.start_date)}</span>
-          </div>
-          <div className="detail-row">
-            <span className="label">End Date</span>
-            <span className="value">{formatDate(tier.end_date)}</span>
-          </div>
-        </div>
-
-        <div className="tier-actions">
-          <button onClick={() => onEdit && onEdit(tier)} className="btn-edit-tier">Edit Tier</button>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
+    </div>
+  );
 }
