@@ -38,10 +38,7 @@
 
 
 /* Underline the header when the group is expanded */
-.rate-card-container.open .rate-card-toggle {
-  border-bottom: 2px solid var(--color-primary);
-  box-shadow: 0 2px 0 rgba(0,0,0,0.02);
-}
+
 
 
 /* Smooth transition for the line */
@@ -95,7 +92,7 @@
 /* ---------- Grouped tabs & compact tier rows ---------- */
 
 .rate-card-container {
-  border: 1px solid var(--color-border-light);
+  border: 1.5px solid var(--color-border-light);
   border-radius: 8px;
   background: var(--color-bg-white);
   overflow: hidden;
@@ -121,7 +118,8 @@
 
 /* Rate-card (fallback if RateCardInfo renders its own wrapper) */
 .rate-card {
-  border: 1px solid var(--color-border-light);
+  border-top: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border-light);
   border-radius: 8px;
   background: var(--color-bg-white);
   overflow: hidden;
@@ -139,15 +137,12 @@
 .rate-card-dates { font-size: var(--font-size-sm); color: var(--color-text-dark); font-weight: var(--font-weight-medium); }
 .rate-card-meta { display: flex; align-items: center; gap: 12px; color: var(--color-text-gray); }
 .rate-card-base { font-weight: 600; color: var(--color-text-dark); }
-.rate-card-body { padding: 12px; }
 
-/* Grid layout for grouped row columns: min / max / price / actions */
 .group-tier-row {
   display: grid;
   grid-template-columns: 1fr 1fr 180px 96px;
-  gap: 12px;
   align-items: center;
-  padding: 10px 0;
+
 }
 
 .group-info-item label,
@@ -210,8 +205,8 @@
 .rate-card-body,
 .group-body {
   width: 100%;
-  box-sizing: border-box;
-  display: block;
+ 
+ 
 }
 
 /* Make grid columns reliably use available space and stay horizontal */
