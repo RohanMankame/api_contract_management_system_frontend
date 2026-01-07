@@ -148,3 +148,14 @@
   .max-actions .max-row-controls input[type="number"] { width: 100%; max-width: none; }
   .row-actions-bottom-right { justify-content: flex-start; gap: 8px; }
 }
+
+
+
+.batch-row .form-group input[disabled],
+.batch-row .form-group input.readonly-input {
+  background: #f3f4f6; 
+  color: var(--color-text-dark);
+  border: 1px solid var(--color-border-light);
+  cursor: not-allowed;
+  border: var(--color-primary) 1px solid;
+}
