@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { EditEntityModal } from './EditEntityModal';
 import { useApi } from '../hooks/useApi';
 import '../styles/components/SubscriptionTierItem.css';
+import { RateCardInfo } from './RateCardInfo';
 
 export function SubscriptionTierItem({ tier, isExpanded, onToggleExpand, onEditTier, onDeleteTier }) {
   const [showEditModal, setShowEditModal] = useState(false);
@@ -62,49 +63,13 @@ export function SubscriptionTierItem({ tier, isExpanded, onToggleExpand, onEditT
               </span>
             </div>
           </div>
-          <span className="tier-price">
+          {/* <span className="tier-price">
             Base: ${parseFloat(tier.base_price).toFixed(2)}
-          </span>
+          </span> */}
         </div>
 
         {isExpanded && (
-          <div className="tier-content">
-            <div className="tier-details">
-              <div className="detail-row">
-                <span className="label">Min Calls</span>
-                <span className="value">{tier.min_calls}</span>
-              </div>
-              <div className="detail-row">
-                <span className="label">Max Calls</span>
-                <span className="value">{tier.max_calls}</span>
-              </div>
-              <div className="detail-row">
-                <span className="label">Base Price</span>
-                <span className="value">${parseFloat(tier.base_price).toFixed(2)}</span>
-              </div>
-              <div className="detail-row">
-                <span className="label">Price Per Tier</span>
-                <span className="value">{tier.price_per_tier ? `$${parseFloat(tier.price_per_tier).toFixed(2)}` : 'N/A'}</span>
-              </div>
-              <div className="detail-row">
-                <span className="label">Start Date</span>
-                <span className="value">{formatDate(tier.start_date)}</span>
-              </div>
-              <div className="detail-row">
-                <span className="label">End Date</span>
-                <span className="value">{formatDate(tier.end_date)}</span>
-              </div>
-            </div>
-
-            <div className="tier-actions">
-              <button 
-                onClick={() => setShowEditModal(true)}
-                className="btn-edit-tier"
-              >
-                Edit Tier
-              </button>
-            </div>
-          </div>
+          <RateCardInfo tier={tier} onEdit={() => setShowEditModal(true)} />
         )}
       </div>
 
