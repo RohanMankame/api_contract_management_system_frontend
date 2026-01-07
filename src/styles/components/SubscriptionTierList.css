@@ -36,6 +36,20 @@
 
 .tiers-list { display: flex; flex-direction: column; gap: 8px; }
 
+
+/* Underline the header when the group is expanded */
+.rate-card-container.open .rate-card-toggle {
+  border-bottom: 2px solid var(--color-primary);
+  /* optional subtle emphasis */
+  box-shadow: 0 2px 0 rgba(0,0,0,0.02);
+}
+
+/* Smooth transition for the line */
+.rate-card-toggle {
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+
 .no-tiers {
   padding: 20px;
   text-align: center;
@@ -46,116 +60,142 @@
 }
 .no-tiers p { margin: 0; font-size: var(--font-size-sm); }
 
+/* ---------- Batch add styles (unchanged) ---------- */
 .batch-row { border-bottom: 1px dashed rgba(0,0,0,0.06); padding: 6px 0; }
-
-/* Wider modal for batch add so the three inputs fit on one row */
 .modal-content.modal-wide { max-width: 920px; }
-
-/* Three columns layout */
-.batch-row .form-group-row.three-columns {
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-  align-items: center;
-}
-
-/* Compact inline checkbox */
-.batch-row .form-group label.checkbox-inline {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: 6px;
-  font-size: 13px;
-  color: var(--color-text-dark);
-}
-.batch-row .form-group input.infinite-checkbox {
-  width: 16px;
-  height: 16px;
-  accent-color: #1D7C44;
-  cursor: pointer;
-}
-
-/* Make controls inline */
-.max-actions .max-row-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-.max-actions .max-row-controls input[type="number"] {
-  width: 120px;
-  max-width: 35%;
-}
-
-/* Equal width for Min and Max inputs */
+.batch-row .form-group-row.three-columns { grid-template-columns: repeat(3, 1fr); gap: 12px; align-items: center; }
+.batch-row .form-group label.checkbox-inline { display: inline-flex; align-items: center; gap: 8px; margin-left: 6px; font-size: 13px; color: var(--color-text-dark); }
+.batch-row .form-group input.infinite-checkbox { width: 16px; height: 16px; accent-color: #1D7C44; cursor: pointer; }
+.max-actions .max-row-controls { display: flex; align-items: center; gap: 8px; width: 100%; }
+.max-actions .max-row-controls input[type="number"] { width: 120px; max-width: 35%; }
 .batch-row .form-group-row.three-columns .form-group:nth-child(1) input[type="number"],
-.batch-row .form-group-row.three-columns .form-group:nth-child(2) input[type="number"] {
-  width: 120px;
-  min-width: 80px;
-}
-
-/* Bottom-right action buttons */
-.row-actions-bottom-right {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 6px;
-}
-
-/* Buttons styling */
-.row-actions-bottom-right button {
-  width: 36px;
-  height: 32px;
-  border-radius: 6px;
-  border: 1px solid var(--color-border-light);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-/* Remove / minus button: red */
-.row-actions-bottom-right button.remove {
-  background: #fff;
-  color: #c62828;
-  border: 1px solid rgba(0,0,0,0.06);
-}
+.batch-row .form-group-row.three-columns .form-group:nth-child(2) input[type="number"] { width: 120px; min-width: 80px; }
+.row-actions-bottom-right { display: flex; justify-content: flex-end; gap: 8px; padding-top: 6px; }
+.row-actions-bottom-right button { width: 36px; height: 32px; border-radius: 6px; border: 1px solid var(--color-border-light); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; }
+.row-actions-bottom-right button.remove { background: #fff; color: #c62828; border: 1px solid rgba(0,0,0,0.06); }
 .row-actions-bottom-right button.remove:hover { background: #ffebee; }
-
-/* Disabled state for remove button */
-.row-actions-bottom-right button.remove:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  background: #fff;
-  color: rgba(0,0,0,0.3);
-  border: 1px solid rgba(0,0,0,0.04);
-}
-
-/* Add / plus button: green */
-.row-actions-bottom-right button.add {
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
-}
+.row-actions-bottom-right button.remove:disabled { opacity: 0.45; cursor: not-allowed; background: #fff; color: rgba(0,0,0,0.3); border: 1px solid rgba(0,0,0,0.04); }
+.row-actions-bottom-right button.add { background: var(--color-primary); color: #fff; border: none; }
 .row-actions-bottom-right button.add:hover { opacity: 0.95; }
-
-/* Price input compacting and form spacing */
 .form-group { gap: 6px; }
-
-/* Responsive: wrap controls on small screens */
 @media (max-width: 640px) {
   .max-actions .max-row-controls { flex-wrap: wrap; gap: 8px; }
   .max-actions .max-row-controls input[type="number"] { width: 100%; max-width: none; }
   .row-actions-bottom-right { justify-content: flex-start; gap: 8px; }
 }
-
-
-
 .batch-row .form-group input[disabled],
 .batch-row .form-group input.readonly-input {
-  background: #f3f4f6; 
+  background: #f3f4f6;
   color: var(--color-text-dark);
   border: 1px solid var(--color-border-light);
   cursor: not-allowed;
   border: var(--color-primary) 1px solid;
 }
+
+/* ---------- Grouped tabs & compact tier rows ---------- */
+
+.rate-card-container {
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  background: var(--color-bg-white);
+  overflow: hidden;
+}
+
+/* Toggle header for each group */
+.rate-card-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  gap: 12px;
+  background: transparent;
+}
+.rate-card-toggle-left { display:flex; align-items:center; gap:8px;  ;}
+.rate-card-toggle-left strong { font-size: var(--font-size-base); color: var(--color-text-dark); }
+.rate-card-toggle-right { display:flex; align-items:center; gap:10px; color:var(--color-text-gray); }
+.rate-card-base-header { font-weight: 600; margin-right: 8px; }
+
+/* Group body area where tiers render */
+.group-body { padding: 8px 12px 12px; }
+
+/* Rate-card (fallback if RateCardInfo renders its own wrapper) */
+.rate-card {
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  background: var(--color-bg-white);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.rate-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border-light);
+  background: transparent;
+}
+.rate-card-dates { font-size: var(--font-size-sm); color: var(--color-text-dark); font-weight: var(--font-weight-medium); }
+.rate-card-meta { display: flex; align-items: center; gap: 12px; color: var(--color-text-gray); }
+.rate-card-base { font-weight: 600; color: var(--color-text-dark); }
+.rate-card-body { padding: 12px; }
+
+/* Grid layout for grouped row columns: min / max / price / actions */
+.group-tier-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 180px 96px;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.group-info-item label,
+.group-tier-row label {
+  font-size: 12px;
+  color: var(--color-text-gray);
+  text-transform: uppercase;
+  display: block;
+}
+
+.group-info-item p,
+.group-tier-row p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--color-text-dark);
+}
+
+/* price column right-align */
+.rate-row-price,
+.group-tier-row .rate-row-price { text-align: right; }
+
+/* align the edit button */
+.group-tier-actions { display:flex; justify-content:flex-end; align-items:center; }
+
+/* subtle hr between grouped tiers */
+.group-separator, .rate-card-body hr {
+  border: none;
+  border-top: 1px solid var(--color-border-light);
+  margin: 8px 0;
+}
+
+/* Fallback primary button styling for grouped context (guarantee it looks like .btn-edit-tier) */
+.group-body .btn-edit-tier,
+.rate-card-body .btn-edit-tier {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+.group-body .btn-edit-tier:hover,
+.rate-card-body .btn-edit-tier:hover {
+  background: #229d4e;
+}
+
+/* small expand icon tuning */
+.expand-icon { font-size: 12px; margin-left: 8px; }
+.expand-icon.expanded { transform: none; }
