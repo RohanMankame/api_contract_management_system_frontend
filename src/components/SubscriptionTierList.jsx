@@ -80,7 +80,8 @@ export function SubscriptionTierList({
                     <strong>{group.start_date ? new Date(group.start_date).toLocaleDateString() : 'N/A'} → {group.end_date ? new Date(group.end_date).toLocaleDateString() : 'N/A'}</strong>
                   </div>
                   <div className="rate-card-toggle-right">
-                    {pricing_type === 'Fixed' && <div className="rate-card-base-header">Base: {group.tiers[0]?.base_price ? `$${parseFloat(group.tiers[0].base_price).toFixed(2)}` : 'N/A'}</div>}
+                    {pricing_type === 'Fixed' && <div className="rate-card-base-header">
+                      </div>}
                     <small className="muted">{pricing_type}</small>
                     <span className={`expand-icon ${isOpen ? 'expanded' : ''}`}>{isOpen ? '▲' : '▼'}</span>
                   </div>
