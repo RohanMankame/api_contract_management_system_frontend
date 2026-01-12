@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { RateCardInfo } from './RateCardInfo';
 import { EditEntityModal } from './EditEntityModal';
 import { useApi } from '../hooks/useApi';
+import BatchAddTiersModal from './BatchAddTiersModal';
 import '../styles/components/SubscriptionTierList.css';
 
 export function RateCardList({
@@ -19,8 +20,17 @@ export function RateCardList({
   const [showEditRateCardModal, setShowEditRateCardModal] = useState(false);
   const [editingTier, setEditingTier] = useState(null);
   const [showEditTierModal, setShowEditTierModal] = useState(false);
+  const [showBatchAddTiersModal, setShowBatchAddTiersModal] = useState(false);
+  const [selectedRateCardForTiers, setSelectedRateCardForTiers] = useState(null);
   
   const { post, put, delete: deleteRequest } = useApi();
+
+  // Helper to format ISO date to yyyy-MM-dd
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return date.toISOString().split('T')[0];
+  };
 
   const toggleRateCardExpand = (rateCardId) => {
     const next = new Set(expandedRateCards);
@@ -116,6 +126,17 @@ export function RateCardList({
     }
   };
 
+  const handleOpenAddTiersModal = (rateCard) => {
+    setSelectedRateCardForTiers(rateCard);
+    setShowBatchAddTiersModal(true);
+  };
+
+  const handleTiersAdded = () => {
+    setShowBatchAddTiersModal(false);
+    setSelectedRateCardForTiers(null);
+    onRateCardUpdate && onRateCardUpdate();
+  };
+
   const rateCardsArray = Array.isArray(rateCards) ? rateCards : [];
 
   return (
@@ -175,10 +196,7 @@ export function RateCardList({
                           Edit Rate Card
                         </button>
                         <button 
-                          onClick={() => {
-                            setEditingRateCard(rateCard);
-                            setShowAddRateCardModal(true);
-                          }}
+                          onClick={() => handleOpenAddTiersModal(rateCard)}
                           className="btn-add-tier"
                         >
                           + Add Tier
@@ -197,9 +215,9 @@ export function RateCardList({
         </div>
       </div>
 
-      {/* Add Rate Card Modal */}
+     
       <EditEntityModal
-        isOpen={showAddRateCardModal && !editingRateCard}
+        isOpen={showAddRateCardModal}
         title="Add Rate Card"
         fields={[
           { name: 'start_date', label: 'Start Date', type: 'date', required: true },
@@ -210,7 +228,7 @@ export function RateCardList({
         onClose={() => setShowAddRateCardModal(false)}
       />
 
-      {/* Edit Rate Card Modal */}
+      
       <EditEntityModal
         isOpen={showEditRateCardModal}
         title="Edit Rate Card"
@@ -218,7 +236,11 @@ export function RateCardList({
           { name: 'start_date', label: 'Start Date', type: 'date', required: true },
           { name: 'end_date', label: 'End Date', type: 'date', required: true },
         ]}
-        data={editingRateCard || {}}
+        data={editingRateCard ? {
+          ...editingRateCard,
+          start_date: formatDateForInput(editingRateCard.start_date),
+          end_date: formatDateForInput(editingRateCard.end_date)
+        } : {}}
         onSubmit={handleEditRateCard}
         onDelete={handleDeleteRateCard}
         onClose={() => {
@@ -227,7 +249,7 @@ export function RateCardList({
         }}
       />
 
-      {/* Edit Tier Modal */}
+      
       <EditEntityModal
         isOpen={showEditTierModal}
         title="Edit Tier"
@@ -243,6 +265,18 @@ export function RateCardList({
           setShowEditTierModal(false);
           setEditingTier(null);
         }}
+      />
+
+      
+      <BatchAddTiersModal
+        isOpen={showBatchAddTiersModal}
+        onClose={() => {
+          setShowBatchAddTiersModal(false);
+          setSelectedRateCardForTiers(null);
+        }}
+        rateCardId={selectedRateCardForTiers?.id}
+        pricingType={pricingType}
+        onAdded={handleTiersAdded}
       />
     </>
   );
