@@ -32,20 +32,17 @@
   cursor: pointer;
   transition: all 0.2s;
 }
-.btn-add-tier:hover { background: #229d4e; }
 
-.tiers-list { display: flex; flex-direction: column; gap: 8px; }
-
-
-/* Underline the header when the group is expanded */
-
-
-
-/* Smooth transition for the line */
-.rate-card-toggle {
-  transition: border-color 180ms ease, box-shadow 180ms ease;
+.btn-add-tier:hover {
+  background: #229d4e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.tiers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
 .no-tiers {
   padding: 20px;
@@ -55,50 +52,150 @@
   border: 1px dashed var(--color-border-light);
   border-radius: 8px;
 }
-.no-tiers p { margin: 0; font-size: var(--font-size-sm); }
 
-/* ---------- Batch add styles (unchanged) ---------- */
-.batch-row { border-bottom: 1px dashed rgba(0,0,0,0.06); padding: 6px 0; }
-.modal-content.modal-wide { max-width: 920px; }
-.batch-row .form-group-row.three-columns { grid-template-columns: repeat(3, 1fr); gap: 12px; align-items: center; }
-.batch-row .form-group label.checkbox-inline { display: inline-flex; align-items: center; gap: 8px; margin-left: 6px; font-size: 13px; color: var(--color-text-dark); }
-.batch-row .form-group input.infinite-checkbox { width: 16px; height: 16px; accent-color: #1D7C44; cursor: pointer; }
-.max-actions .max-row-controls { display: flex; align-items: center; gap: 8px; width: 100%; }
-.max-actions .max-row-controls input[type="number"] { width: 120px; max-width: 35%; }
-.batch-row .form-group-row.three-columns .form-group:nth-child(1) input[type="number"],
-.batch-row .form-group-row.three-columns .form-group:nth-child(2) input[type="number"] { width: 120px; min-width: 80px; }
-.row-actions-bottom-right { display: flex; justify-content: flex-end; gap: 8px; padding-top: 6px; }
-.row-actions-bottom-right button { width: 36px; height: 32px; border-radius: 6px; border: 1px solid var(--color-border-light); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; }
-.row-actions-bottom-right button.remove { background: #fff; color: #c62828; border: 1px solid rgba(0,0,0,0.06); }
-.row-actions-bottom-right button.remove:hover { background: #ffebee; }
-.row-actions-bottom-right button.remove:disabled { opacity: 0.45; cursor: not-allowed; background: #fff; color: rgba(0,0,0,0.3); border: 1px solid rgba(0,0,0,0.04); }
-.row-actions-bottom-right button.add { background: var(--color-primary); color: #fff; border: none; }
-.row-actions-bottom-right button.add:hover { opacity: 0.95; }
-.form-group { gap: 6px; }
-@media (max-width: 640px) {
-  .max-actions .max-row-controls { flex-wrap: wrap; gap: 8px; }
-  .max-actions .max-row-controls input[type="number"] { width: 100%; max-width: none; }
-  .row-actions-bottom-right { justify-content: flex-start; gap: 8px; }
+.no-tiers p {
+  margin: 0;
+  font-size: var(--font-size-sm);
 }
+
+.batch-row {
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+  padding: 6px 0;
+}
+
+.modal-content.modal-wide {
+  max-width: 920px;
+}
+
+.batch-row .form-group-row.three-columns {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.batch-row .form-group label.checkbox-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 6px;
+  font-size: 13px;
+  color: var(--color-text-dark);
+}
+
+.batch-row .form-group input.infinite-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #1D7C44;
+  cursor: pointer;
+}
+
+.max-actions .max-row-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.max-actions .max-row-controls input[type="number"] {
+  width: 120px;
+  max-width: 35%;
+}
+
+.batch-row .form-group-row.three-columns .form-group:nth-child(1) input[type="number"],
+.batch-row .form-group-row.three-columns .form-group:nth-child(2) input[type="number"] {
+  width: 120px;
+  min-width: 80px;
+}
+
+.row-actions-bottom-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.row-actions-bottom-right button {
+  width: 36px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.row-actions-bottom-right button.remove {
+  background: #fff;
+  color: #c62828;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.row-actions-bottom-right button.remove:hover {
+  background: #ffebee;
+}
+
+.row-actions-bottom-right button.remove:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #fff;
+  color: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.row-actions-bottom-right button.add {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+}
+
+.row-actions-bottom-right button.add:hover {
+  opacity: 0.95;
+}
+
+.form-group {
+  gap: 6px;
+}
+
+@media (max-width: 640px) {
+  .max-actions .max-row-controls {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .max-actions .max-row-controls input[type="number"] {
+    width: 100%;
+    max-width: none;
+  }
+
+  .row-actions-bottom-right {
+    justify-content: flex-start;
+    gap: 8px;
+  }
+}
+
 .batch-row .form-group input[disabled],
 .batch-row .form-group input.readonly-input {
   background: #f3f4f6;
   color: var(--color-text-dark);
   border: 1px solid var(--color-border-light);
   cursor: not-allowed;
-  border: var(--color-primary) 1px solid;
 }
 
-/* ---------- Grouped tabs & compact tier rows ---------- */
 
 .rate-card-container {
   border: 1.5px solid var(--color-border-light);
   border-radius: 8px;
   background: var(--color-bg-white);
   overflow: hidden;
+  transition: all 0.2s ease;
 }
 
-/* Toggle header for each group */
+.rate-card-container.open {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
 .rate-card-toggle {
   display: flex;
   justify-content: space-between;
@@ -107,24 +204,63 @@
   cursor: pointer;
   gap: 12px;
   background: transparent;
+  transition: background-color 0.2s ease;
 }
-.rate-card-toggle-left { display:flex; align-items:center; gap:8px;  ;}
-.rate-card-toggle-left strong { font-size: var(--font-size-base); color: var(--color-text-dark); }
-.rate-card-toggle-right { display:flex; align-items:center; gap:10px; color:var(--color-text-gray); }
-.rate-card-base-header { font-weight: 600; margin-right: 8px; }
 
-/* Group body area where tiers render */
-.group-body { padding: 8px 12px 12px; }
+.rate-card-toggle:hover {
+  background-color: rgba(29, 124, 68, 0.04);
+}
 
-/* Rate-card (fallback if RateCardInfo renders its own wrapper) */
+.rate-card-toggle-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.rate-card-toggle-left strong {
+  font-size: var(--font-size-base);
+  color: var(--color-text-dark);
+  font-weight: var(--font-weight-semibold);
+}
+
+.rate-card-toggle-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-gray);
+  font-size: var(--font-size-sm);
+}
+
+.rate-card-base-header {
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.expand-icon {
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.expand-icon.expanded {
+  transform: scaleY(-1);
+}
+
+
+.rate-card-content {
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-border-light);
+}
+
 .rate-card {
   border-top: 1px solid var(--color-border-light);
   border-bottom: 1px solid var(--color-border-light);
   border-radius: 8px;
   background: var(--color-bg-white);
   overflow: hidden;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
+
 .rate-card-header {
   display: flex;
   justify-content: space-between;
@@ -134,15 +270,232 @@
   border-bottom: 1px solid var(--color-border-light);
   background: transparent;
 }
-.rate-card-dates { font-size: var(--font-size-sm); color: var(--color-text-dark); font-weight: var(--font-weight-medium); }
-.rate-card-meta { display: flex; align-items: center; gap: 12px; color: var(--color-text-gray); }
-.rate-card-base { font-weight: 600; color: var(--color-text-dark); }
+
+.rate-card-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dark);
+  font-weight: var(--font-weight-medium);
+}
+
+.rate-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-text-gray);
+}
+
+.rate-card-base {
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.rate-card-body {
+  background: var(--color-bg-white);
+  border-radius: 6px;
+  padding: 8px 0;
+}
+
+
+.rate-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 180px 96px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0;
+}
+
+.rate-row-item {
+  min-width: 0;
+}
+
+.rate-row-item label {
+  font-size: 11px;
+  color: var(--color-text-gray);
+  text-transform: uppercase;
+  display: block;
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 2px;
+}
+
+.rate-row-item p {
+  margin: 0;
+  font-size: var(--font-size-base);
+  color: var(--color-text-dark);
+  font-weight: var(--font-weight-medium);
+}
+
+.rate-row-price {
+  flex: 1.2;
+}
+
+.rate-row-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+
+.btn-edit-tier {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-edit-tier:hover {
+  background: #229d4e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-delete-tier {
+  background: #f5f5f5;
+  color: #d32f2f;
+  border: 1px solid #e0e0e0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-delete-tier:hover {
+  background: #ffebee;
+  border-color: #d32f2f;
+  color: #c62828;
+}
+
+
+.rate-cards-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.rate-cards-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.rate-cards-header h4 {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+}
+
+.btn-add-rate-card {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add-rate-card:hover {
+  background: #229d4e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rate-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.no-rate-cards {
+  padding: 20px;
+  text-align: center;
+  color: var(--color-text-gray);
+  background: var(--color-bg-white);
+  border: 1px dashed var(--color-border-light);
+  border-radius: 8px;
+}
+
+.no-rate-cards p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.no-tiers-message {
+  margin: 0;
+  padding: 12px;
+  text-align: center;
+  color: var(--color-text-gray);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+}
+
+
+.rate-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.btn-edit-rate-card {
+  background: #333333;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-edit-rate-card:hover {
+  background: #1a1a1a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.rate-card-actions .btn-add-tier {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+.rate-card-actions .btn-add-tier:hover {
+  background: #229d4e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.group-body {
+  padding: 8px 12px 12px;
+}
 
 .group-tier-row {
   display: grid;
   grid-template-columns: 1fr 1fr 180px 96px;
   align-items: center;
-
 }
 
 .group-info-item label,
@@ -160,76 +513,83 @@
   color: var(--color-text-dark);
 }
 
-
-.rate-row{
+.group-tier-actions {
   display: flex;
-  flex-direction:row;
-  justify-content: space-between;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 
-/* align the edit button */
-.group-tier-actions { display:flex; justify-content:flex-end; align-items:center; }
-
-/* subtle hr between grouped tiers */
-.group-separator, .rate-card-body hr {
+.group-separator,
+.rate-card-body hr {
   border: none;
   border-top: 1px solid var(--color-border-light);
   margin: 8px 0;
 }
 
-/* Fallback primary button styling for grouped context (guarantee it looks like .btn-edit-tier) */
-.group-body .btn-edit-tier,
-.rate-card-body .btn-edit-tier {
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-}
-.group-body .btn-edit-tier:hover,
-.rate-card-body .btn-edit-tier:hover {
-  background: #229d4e;
-}
 
-/* small expand icon tuning */
-.expand-icon { font-size: 12px; margin-left: 8px; }
-.expand-icon.expanded { transform: none; }
+@media (max-width: 768px) {
+  .rate-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
 
-/* Ensure containers and body fill available width */
-.rate-card-container,
-.rate-card,
-.rate-card-body,
-.group-body {
-  width: 100%;
- 
- 
+  .rate-row-item:nth-child(3),
+  .rate-row-item:nth-child(4) {
+    grid-column: span 1;
+  }
+
+  .rate-row-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+
+  .rate-card-actions {
+    flex-direction: column;
+  }
+
+  .rate-card-actions .btn-add-tier {
+    flex: none;
+  }
 }
 
-/* Make grid columns reliably use available space and stay horizontal */
-.rate-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 180px 96px;
-  gap: 12px;
-  align-items: center;
-  width: 100%;
-}
+@media (max-width: 640px) {
+  .rate-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
 
-/* Ensure items inside the grid don't force min-width overflow */
-.rate-row-item,
-.rate-row-actions {
-  min-width: 0;
-}
+  .rate-row-item {
+    grid-column: 1 / -1;
+  }
 
-/* Keep edit button styled */
-.group-body .btn-edit-tier,
-.rate-card-body .btn-edit-tier {
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
+  .rate-row-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    margin-top: 8px;
+  }
+
+  .rate-card-toggle {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 12px;
+  }
+
+  .rate-card-toggle-left,
+  .rate-card-toggle-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .rate-card-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .btn-edit-rate-card,
+  .rate-card-actions .btn-add-tier {
+    width: 100%;
+    padding: 10px 12px;
+  }
 }
