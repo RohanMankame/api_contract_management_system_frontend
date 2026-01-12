@@ -1,7 +1,16 @@
 // src/components/TierRow.jsx
 import React from 'react';
 
-export default function TierRow({ row, index, isLast, onChange, onRemove, onAdd, canRemove }) {
+export default function TierRow({ 
+  row, 
+  index, 
+  isLast, 
+  onChange, 
+  onRemove, 
+  onAdd, 
+  canRemove,
+  priceLabel = 'Unit Price'
+}) {
   return (
     <div className="batch-row">
       <div className="form-group-row three-columns">
@@ -26,7 +35,6 @@ export default function TierRow({ row, index, isLast, onChange, onRemove, onAdd,
                 if (v === '∞') {
                   onChange({ infinite: true, max_calls: '∞' });
                 } else {
-                  
                   const cleaned = v.replace(/[^\d]/g, '');
                   onChange({ max_calls: cleaned, infinite: false });
                 }
@@ -49,19 +57,19 @@ export default function TierRow({ row, index, isLast, onChange, onRemove, onAdd,
         </div>
 
         <div className="form-group">
-          <label>Price Per Tier</label>
+          <label>{priceLabel}</label>
           <input
             type="number"
             step="0.01"
-            value={row.price_per_tier}
-            onChange={e => onChange({ price_per_tier: e.target.value })}
+            value={row.unit_price}
+            onChange={e => onChange({ unit_price: e.target.value })}
             disabled={!isLast}
             className={!isLast ? 'readonly-input' : ''}
           />
         </div>
       </div>
 
-      {/* Bottom-right inline actions */}
+      
       <div className="row-actions-bottom-right">
         {isLast && canRemove && (
           <button
@@ -82,6 +90,5 @@ export default function TierRow({ row, index, isLast, onChange, onRemove, onAdd,
         )}
       </div>
     </div>
-    
   );
 }

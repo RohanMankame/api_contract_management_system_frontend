@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/PageLayout';
 import { DataTable } from '../components/DataTable';
 import { useApi } from '../hooks/useApi';
+import { extractList } from '../hooks/useApiHelpers';
 import { EntityModal } from '../components/EntityModal';
 import { ContractActionModal } from '../components/ContractActionModal';
 import '../styles/pages/ContractsPage.css';
@@ -16,39 +17,31 @@ export function ContractsPage() {
   const [showActionModal, setShowActionModal] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
   const [clients, setClients] = useState([]);
+  const [contracts, setContracts] = useState([]);
 
   // Fetch clients and contracts on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
         const clientsResponse = await get('/clients');
+        const contractsResponse = await get('/contracts');
         
-        // Safely extract clients array
-        let clientsData = [];
-        if (clientsResponse && clientsResponse.data && Array.isArray(clientsResponse.data.clients)) {
-          clientsData = clientsResponse.data.clients;
-        } else if (clientsResponse && Array.isArray(clientsResponse.clients)) {
-          clientsData = clientsResponse.clients;
-        } else if (Array.isArray(clientsResponse)) {
-          clientsData = clientsResponse;
-        }
-        
+        // Extract clients using helper
+        const clientsData = extractList(clientsResponse, 'clients');
         setClients(clientsData);
         
-        // Fetch contracts
-        await get('/contracts');
+        // Extract contracts using helper
+        const contractsData = extractList(contractsResponse, 'contracts');
+        setContracts(contractsData);
+        
+        console.log('Loaded contracts:', contractsData);
       } catch (err) {
         console.error('Error loading data:', err);
       }
     };
     
     loadData();
-  }, []);
-
-  // Safely extract contracts array
-  const contracts = (response && response.data && Array.isArray(response.data.contracts)) 
-    ? response.data.contracts 
-    : [];
+  }, [get]);
 
   // ag-grid column definitions
   const columnDefs = [
@@ -63,18 +56,17 @@ export function ContractsPage() {
 
   // input fields for add modal
   const formFields = [
-  { 
-    name: 'client_id', 
-    label: 'Client', 
-    type: 'select',
-    options: clients.map(c => ({ value: c.id, label: c.company_name })),
-    required: true 
-  },
-  { name: 'contract_name', label: 'Contract Name', type: 'text', required: true },
-  { name: 'start_date', label: 'Start Date', type: 'date', required: true, group: 'dates' },
-  { name: 'end_date', label: 'End Date', type: 'date', required: true, group: 'dates' },
-];
-
+    { 
+      name: 'client_id', 
+      label: 'Client', 
+      type: 'select',
+      options: clients.map(c => ({ value: c.id, label: c.company_name })),
+      required: true 
+    },
+    { name: 'contract_name', label: 'Contract Name', type: 'text', required: true },
+    { name: 'start_date', label: 'Start Date', type: 'date', required: true, group: 'dates' },
+    { name: 'end_date', label: 'End Date', type: 'date', required: true, group: 'dates' },
+  ];
 
   // ag-grid onGridReady
   const handleGridReady = (params) => {
@@ -89,18 +81,23 @@ export function ContractsPage() {
 
   // Handle add contract
   const handleAddContract = async (formData) => {
-    await post('/contracts', formData);
-    setShowAddModal(false);
-    get('/contracts');
+    try {
+      await post('/contracts', formData);
+      setShowAddModal(false);
+      // Refresh contracts list
+      const contractsResponse = await get('/contracts');
+      const contractsData = extractList(contractsResponse, 'contracts');
+      setContracts(contractsData);
+    } catch (err) {
+      console.error('Error adding contract:', err);
+    }
   };
 
   // Handle edit contract - navigate to details page
   const handleEditContract = () => {
-  setShowActionModal(false);
-  navigate(`/contracts/${selectedContract.id}`);
-};
-
- 
+    setShowActionModal(false);
+    navigate(`/contracts/${selectedContract.id}`);
+  };
 
   const handleCloseActionModal = () => {
     setShowActionModal(false);
@@ -121,7 +118,6 @@ export function ContractsPage() {
               + Add Contract
             </button>
           </div>
-          
         </div>
         <DataTable 
           onGridReady={handleGridReady}
@@ -144,7 +140,6 @@ export function ContractsPage() {
           isOpen={showActionModal}
           contract={selectedContract}
           onEdit={handleEditContract}
-          //onDelete={handleDeleteContract}
           onClose={handleCloseActionModal}
         />
       </div>

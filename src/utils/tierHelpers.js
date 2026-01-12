@@ -11,14 +11,11 @@ export function validateRows(rows) {
   return null;
 }
 
-export function buildBatchPayload(rows, subscriptionId, start_date, end_date) {
+export function buildBatchPayload(rows, rateCardId) {
   return rows.map(r => ({
-    subscription_id: subscriptionId,
+    rate_card_id: rateCardId,
     min_calls: Number(r.min_calls),
     max_calls: r.infinite ? -1 : Number(r.max_calls),
-    base_price: 0,
-    price_per_tier: Number(r.price_per_tier || 0),
-    start_date,
-    end_date: end_date || null
+    unit_price: Number(r.unit_price || 0),
   }));
 }

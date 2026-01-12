@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { EditEntityModal } from './EditEntityModal';
 import { useApi } from '../hooks/useApi';
-import { SubscriptionTierList } from './SubscriptionTierList';
+import { RateCardList } from './RateCardList';
 import '../styles/components/SubscriptionItem.css';
 
 export function SubscriptionItem({ 
@@ -12,7 +12,6 @@ export function SubscriptionItem({
   onSubscriptionUpdate
 }) {
   const [showEditModal, setShowEditModal] = useState(false);
-  const [expandedTiers, setExpandedTiers] = useState(new Set());
   const { put, get, delete: deleteRequest } = useApi();
 
   const getProductName = (productId) => {
@@ -75,7 +74,6 @@ export function SubscriptionItem({
   };
 
   const handleEditSubmit = async (formData) => {
-    
     const submitData = {
       ...formData,
       product_id: formData.product_id 
@@ -93,17 +91,9 @@ export function SubscriptionItem({
     onSubscriptionUpdate();
   };
 
-  const handleToggleTierExpand = (tierId) => {
-    const newExpanded = new Set(expandedTiers);
-    if (newExpanded.has(tierId)) {
-      newExpanded.delete(tierId);
-    } else {
-      newExpanded.add(tierId);
-    }
-    setExpandedTiers(newExpanded);
-  };
-
-  const tiers = subscription.tiers && Array.isArray(subscription.tiers) ? subscription.tiers : [];
+  const rateCards = subscription.rate_cards && Array.isArray(subscription.rate_cards) 
+    ? subscription.rate_cards 
+    : [];
 
   return (
     <>
@@ -117,9 +107,7 @@ export function SubscriptionItem({
               ▼
             </span>
             <div className="subscription-title-content">
-              
               <span className="subscription-product-name">{getProductName(subscription.product_id)}</span>
-              
             </div>
           </div>
           <span className="subscription-note">
@@ -157,15 +145,14 @@ export function SubscriptionItem({
               </button>
             </div>
 
-            <SubscriptionTierList
+            <RateCardList
               subscriptionId={subscription.id}
-              tiers={tiers}
-              expandedTiers={expandedTiers}
-              onToggleExpand={handleToggleTierExpand}
+              rateCards={rateCards}
+              pricingType={subscription.pricing_type}
+              onRateCardUpdate={() => onSubscriptionUpdate()}
               onAddTier={() => onSubscriptionUpdate()}
               onEditTier={() => onSubscriptionUpdate()}
               onDeleteTier={() => onSubscriptionUpdate()}
-              pricing_type={subscription.pricing_type}  
             />
           </div>
         )}
