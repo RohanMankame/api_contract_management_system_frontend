@@ -32,6 +32,8 @@ export function RateCardList({
     return date.toISOString().split('T')[0];
   };
 
+  const isFixed = pricingType === 'Fixed';
+
   const toggleRateCardExpand = (rateCardId) => {
     const next = new Set(expandedRateCards);
     if (next.has(rateCardId)) next.delete(rateCardId);
@@ -85,25 +87,18 @@ export function RateCardList({
     setShowEditTierModal(true);
   };
 
-  const handleDeleteTier = async (tier) => {
-    if (!window.confirm('Are you sure you want to delete this tier?')) return;
-    try {
-      await deleteRequest(`/subscription-tiers/${tier.id}`);
-      onDeleteTier && onDeleteTier();
-      onRateCardUpdate && onRateCardUpdate();
-    } catch (err) {
-      console.error('Error deleting tier:', err);
-    }
-  };
-
   const handleSubmitEditTier = async (formData) => {
     if (!editingTier) return;
     try {
-      await put(`/subscription-tiers/${editingTier.id}`, {
-        min_calls: formData.min_calls,
-        max_calls: formData.max_calls,
-        unit_price: formData.unit_price
-      });
+      const submitData = isFixed 
+        ? { unit_price: formData.unit_price }
+        : {
+            min_calls: formData.min_calls,
+            max_calls: formData.max_calls,
+            unit_price: formData.unit_price
+          };
+      
+      await put(`/subscription-tiers/${editingTier.id}`, submitData);
       setShowEditTierModal(false);
       setEditingTier(null);
       onEditTier && onEditTier();
@@ -115,6 +110,7 @@ export function RateCardList({
 
   const handleSubmitDeleteTier = async () => {
     if (!editingTier) return;
+    if (!window.confirm('Are you sure you want to delete this tier?')) return;
     try {
       await deleteRequest(`/subscription-tiers/${editingTier.id}`);
       setShowEditTierModal(false);
@@ -127,6 +123,12 @@ export function RateCardList({
   };
 
   const handleOpenAddTiersModal = (rateCard) => {
+    // For fixed pricing, check if tier already exists
+    if (isFixed && rateCard.tiers && rateCard.tiers.length > 0) {
+      alert('Fixed pricing rate cards can only have one tier. Edit the existing tier instead.');
+      return;
+    }
+    
     setSelectedRateCardForTiers(rateCard);
     setShowBatchAddTiersModal(true);
   };
@@ -183,7 +185,6 @@ export function RateCardList({
                         rateCard={rateCard} 
                         pricingType={pricingType}
                         onEditTier={handleEditTier}
-                        onDeleteTier={handleDeleteTier}
                       />
                       <div className="rate-card-actions">
                         <button 
@@ -195,12 +196,14 @@ export function RateCardList({
                         >
                           Edit Rate Card
                         </button>
-                        <button 
-                          onClick={() => handleOpenAddTiersModal(rateCard)}
-                          className="btn-add-tier"
-                        >
-                          + Add Tier
-                        </button>
+                        {!(isFixed && rateCard.tiers && rateCard.tiers.length > 0) && (
+                          <button 
+                            onClick={() => handleOpenAddTiersModal(rateCard)}
+                            className="btn-add-tier"
+                          >
+                            + Add Tier
+                          </button>
+                        )}
                       </div>
                     </div>
                   )}
@@ -215,7 +218,7 @@ export function RateCardList({
         </div>
       </div>
 
-     
+      {/* Add Rate Card Modal */}
       <EditEntityModal
         isOpen={showAddRateCardModal}
         title="Add Rate Card"
@@ -228,7 +231,7 @@ export function RateCardList({
         onClose={() => setShowAddRateCardModal(false)}
       />
 
-      
+    
       <EditEntityModal
         isOpen={showEditRateCardModal}
         title="Edit Rate Card"
@@ -252,8 +255,10 @@ export function RateCardList({
       
       <EditEntityModal
         isOpen={showEditTierModal}
-        title="Edit Tier"
-        fields={[
+        title={isFixed ? 'Edit Base Price' : 'Edit Tier'}
+        fields={isFixed ? [
+          { name: 'unit_price', label: 'Base Price', type: 'number', required: true, step: '0.01' },
+        ] : [
           { name: 'min_calls', label: 'Min Calls', type: 'number', required: true },
           { name: 'max_calls', label: 'Max Calls', type: 'number', required: true },
           { name: 'unit_price', label: 'Unit Price', type: 'number', required: true, step: '0.01' },
@@ -267,7 +272,6 @@ export function RateCardList({
         }}
       />
 
-      
       <BatchAddTiersModal
         isOpen={showBatchAddTiersModal}
         onClose={() => {

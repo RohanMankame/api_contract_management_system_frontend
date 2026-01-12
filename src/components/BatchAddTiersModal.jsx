@@ -13,29 +13,74 @@ export default function BatchAddTiersModal({
   onAdded 
 }) {
   const { post } = useApi();
-  const [rows, setRows] = useState([{ min_calls: '0', max_calls: '', infinite: false, unit_price: '' }]);
+  const isFixed = pricingType === 'Fixed';
+  
+  // For fixed pricing, only allow one tier with 0-∞
+  const initialRow = isFixed 
+    ? { min_calls: '0', max_calls: '∞', infinite: true, unit_price: '' }
+    : { min_calls: '0', max_calls: '', infinite: false, unit_price: '' };
+  
+  const [rows, setRows] = useState([initialRow]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
   const addRow = () => {
+    if (isFixed) {
+      setError('Fixed pricing allows only one tier per rate card');
+      return;
+    }
+    
     const last = rows[rows.length - 1];
     if (last?.infinite) { setError('Cannot add after an infinite row'); return; }
     const lastMax = last.max_calls ? Number(last.max_calls) : Number(last.min_calls || 0);
     setRows(prev => [...prev, { min_calls: String(lastMax + 1), max_calls: '', infinite: false, unit_price: '' }]);
   };
-  const removeRow = (i) => setRows(prev => prev.filter((_, idx) => idx !== i));
-  const updateRow = (i, patch) => setRows(prev => prev.map((r, idx) => idx === i ? { ...r, ...patch } : r));
+
+  const removeRow = (i) => {
+    if (isFixed) {
+      setError('Cannot remove the only tier in fixed pricing');
+      return;
+    }
+    setRows(prev => prev.filter((_, idx) => idx !== i));
+  };
+
+  const updateRow = (i, patch) => {
+    setRows(prev => prev.map((r, idx) => idx === i ? { ...r, ...patch } : r));
+  };
 
   const submit = async () => {
     setError(null);
     setLoading(true);
     try {
-      if (!rateCardId) { setError('No rate card selected'); setLoading(false); return; }
+      if (!rateCardId) { 
+        setError('No rate card selected'); 
+        setLoading(false); 
+        return; 
+      }
 
-      const vErr = validateRows(rows);
-      if (vErr) { setError(vErr); setLoading(false); return; }
+      // For fixed pricing, ensure only one tier with correct values
+      if (isFixed) {
+        if (rows.length !== 1) {
+          setError('Fixed pricing must have exactly one tier');
+          setLoading(false);
+          return;
+        }
+        const tier = rows[0];
+        if (!tier.unit_price || Number(tier.unit_price) <= 0) {
+          setError('Unit price is required and must be greater than 0');
+          setLoading(false);
+          return;
+        }
+      } else {
+        const vErr = validateRows(rows);
+        if (vErr) { 
+          setError(vErr); 
+          setLoading(false); 
+          return; 
+        }
+      }
 
       const payload = buildBatchPayload(rows, rateCardId);
       try { 
@@ -47,6 +92,7 @@ export default function BatchAddTiersModal({
       onAdded();
       onClose();
     } catch (err) {
+      console.error('Error submitting tiers:', err);
       setError(err.message || 'Failed to add tiers');
     } finally { 
       setLoading(false); 
@@ -57,14 +103,30 @@ export default function BatchAddTiersModal({
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content modal-wide" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>Add Tiers to Rate Card</h2>
+          <h2>
+            Add Tiers to Rate Card 
+            {isFixed && <span style={{ fontSize: '0.8em', fontWeight: 'normal', marginLeft: '8px' }}>(Fixed Pricing - 1 Tier Only)</span>}
+          </h2>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
 
         <div className="modal-form">
           {error && <div className="modal-error-message">{error}</div>}
 
-         
+          {isFixed && (
+            <div style={{ 
+              backgroundColor: '#f0f4f8', 
+              border: '1px solid #cbd5e0', 
+              borderRadius: '6px', 
+              padding: '12px', 
+              marginBottom: '16px',
+              fontSize: '14px',
+              color: '#2d3748'
+            }}>
+              <strong>Fixed Pricing Mode:</strong> This subscription uses fixed pricing, which allows exactly one tier covering all calls (0 to ∞). Only the unit price can be edited.
+            </div>
+          )}
+
           {rows.map((r, idx) => (
             <TierRow
               key={idx}
@@ -74,15 +136,16 @@ export default function BatchAddTiersModal({
               onChange={(patch) => updateRow(idx, patch)}
               onRemove={() => removeRow(idx)}
               onAdd={addRow}
-              canRemove={rows.length > 1}
-              priceLabel="Unit Price"
+              canRemove={!isFixed && rows.length > 1}
+              priceLabel={isFixed ? 'Base Price' : 'Unit Price'}
+              isFixed={isFixed}
             />
           ))}
 
           <div className="modal-footer">
             <button className="btn-cancel" onClick={onClose}>Cancel</button>
             <button className="btn-submit" onClick={submit} disabled={loading}>
-              {loading ? 'Adding...' : 'Add Tier(s)'}
+              {loading ? 'Adding...' : 'Add Tier'}
             </button>
           </div>
         </div>

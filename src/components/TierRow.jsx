@@ -9,7 +9,8 @@ export default function TierRow({
   onRemove, 
   onAdd, 
   canRemove,
-  priceLabel = 'Unit Price'
+  priceLabel = 'Unit Price',
+  isFixed = false
 }) {
   return (
     <div className="batch-row">
@@ -21,6 +22,7 @@ export default function TierRow({
             value={row.min_calls}
             readOnly
             className="readonly-input"
+            disabled={isFixed}
           />
         </div>
 
@@ -30,7 +32,11 @@ export default function TierRow({
             <input
               type="text"
               value={row.infinite ? '∞' : (row.max_calls ?? '')}
+              readOnly={isFixed}
+              disabled={isFixed}
+              className={isFixed ? 'readonly-input' : ''}
               onChange={e => {
+                if (isFixed) return; // Don't allow changes for fixed pricing
                 const v = e.target.value;
                 if (v === '∞') {
                   onChange({ infinite: true, max_calls: '∞' });
@@ -39,8 +45,6 @@ export default function TierRow({
                   onChange({ max_calls: cleaned, infinite: false });
                 }
               }}
-              disabled={!isLast || row.infinite}
-              className={!isLast ? 'readonly-input' : ''}
             />
 
             <label className="checkbox-inline">
@@ -48,8 +52,11 @@ export default function TierRow({
                 type="checkbox"
                 className="infinite-checkbox"
                 checked={row.infinite}
-                disabled={!isLast}
-                onChange={e => onChange({ infinite: e.target.checked, max_calls: e.target.checked ? '∞' : row.max_calls })}
+                disabled={isFixed}
+                onChange={e => {
+                  if (isFixed) return; // Don't allow changes for fixed pricing
+                  onChange({ infinite: e.target.checked, max_calls: e.target.checked ? '∞' : row.max_calls });
+                }}
               />
               <span className="checkbox-label">Infinity</span>
             </label>
@@ -63,32 +70,35 @@ export default function TierRow({
             step="0.01"
             value={row.unit_price}
             onChange={e => onChange({ unit_price: e.target.value })}
-            disabled={!isLast}
-            className={!isLast ? 'readonly-input' : ''}
+            disabled={!isLast && !isFixed}
+            className={!isLast && !isFixed ? 'readonly-input' : ''}
+            placeholder="Enter price"
           />
         </div>
       </div>
 
       
-      <div className="row-actions-bottom-right">
-        {isLast && canRemove && (
-          <button
-            type="button"
-            className="remove"
-            onClick={onRemove}
-            aria-label={`Remove row ${index}`}
-          >−</button>
-        )}
+      {!isFixed && (
+        <div className="row-actions-bottom-right">
+          {isLast && canRemove && (
+            <button
+              type="button"
+              className="remove"
+              onClick={onRemove}
+              aria-label={`Remove row ${index}`}
+            >−</button>
+          )}
 
-        {isLast && (
-          <button
-            type="button"
-            className="add"
-            onClick={onAdd}
-            aria-label="Add row"
-          >+</button>
-        )}
-      </div>
+          {isLast && (
+            <button
+              type="button"
+              className="add"
+              onClick={onAdd}
+              aria-label="Add row"
+            >+</button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
