@@ -28,6 +28,10 @@ export const API_ENDPOINTS = {
   SUBSCRIPTION_BY_ID: (id) => `/subscriptions/${id}`,
   SUBSCRIPTION_TIERS: (id) => `/subscriptions/${id}/tiers`,
 
+  RATE_CARDS: '/rate-cards',
+  RATE_CARD_BY_ID: (id) => `/rate-cards/${id}`,
+  RATE_CARD_TIERS: (id) => `/rate-cards/${id}/subscription-tiers`,
+
   SUBSCRIPTION_TIER_LIST: '/subscription-tiers',
   SUBSCRIPTION_TIER_BY_ID: (id) => `/subscription-tiers/${id}`,
   SUBSCRIPTION_TIER_SUBSCRIPTIONS: (id) => `/subscription-tiers/${id}/subscriptions`,
