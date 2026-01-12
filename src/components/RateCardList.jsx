@@ -110,7 +110,6 @@ export function RateCardList({
 
   const handleSubmitDeleteTier = async () => {
     if (!editingTier) return;
-    if (!window.confirm('Are you sure you want to delete this tier?')) return;
     try {
       await deleteRequest(`/subscription-tiers/${editingTier.id}`);
       setShowEditTierModal(false);
@@ -127,6 +126,23 @@ export function RateCardList({
     if (isFixed && rateCard.tiers && rateCard.tiers.length > 0) {
       alert('Fixed pricing rate cards can only have one tier. Edit the existing tier instead.');
       return;
+    }
+
+    // For variable pricing, check if last tier has infinity max_calls
+    if (!isFixed && rateCard.tiers && rateCard.tiers.length > 0) {
+      const nonArchivedTiers = rateCard.tiers.filter(t => !t.is_archived);
+      if (nonArchivedTiers.length > 0) {
+        const sorted = [...nonArchivedTiers].sort((a, b) => {
+          const aMax = Number(a.max_calls ?? 0);
+          const bMax = Number(b.max_calls ?? 0);
+          return bMax - aMax; 
+        });
+        const lastTier = sorted[0];
+        if (lastTier.max_calls === -1) {
+          alert('Cannot add a new tier when the last tier has infinite max calls. Edit or delete the existing tier first.');
+          return;
+        }
+      }
     }
     
     setSelectedRateCardForTiers(rateCard);
@@ -218,7 +234,7 @@ export function RateCardList({
         </div>
       </div>
 
-      {/* Add Rate Card Modal */}
+     
       <EditEntityModal
         isOpen={showAddRateCardModal}
         title="Add Rate Card"
@@ -231,7 +247,7 @@ export function RateCardList({
         onClose={() => setShowAddRateCardModal(false)}
       />
 
-    
+      
       <EditEntityModal
         isOpen={showEditRateCardModal}
         title="Edit Rate Card"
@@ -252,7 +268,7 @@ export function RateCardList({
         }}
       />
 
-      
+
       <EditEntityModal
         isOpen={showEditTierModal}
         title={isFixed ? 'Edit Base Price' : 'Edit Tier'}
@@ -272,6 +288,7 @@ export function RateCardList({
         }}
       />
 
+      
       <BatchAddTiersModal
         isOpen={showBatchAddTiersModal}
         onClose={() => {
@@ -279,6 +296,7 @@ export function RateCardList({
           setSelectedRateCardForTiers(null);
         }}
         rateCardId={selectedRateCardForTiers?.id}
+        rateCard={selectedRateCardForTiers}
         pricingType={pricingType}
         onAdded={handleTiersAdded}
       />

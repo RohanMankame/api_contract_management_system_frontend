@@ -1,5 +1,5 @@
 // src/components/BatchAddTiersModal.jsx
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useApi } from '../hooks/useApi';
 import { validateRows, buildBatchPayload } from '../utils/tierHelpers';
 import TierRow from './TierRow';
@@ -9,16 +9,40 @@ export default function BatchAddTiersModal({
   isOpen, 
   onClose, 
   rateCardId, 
+  rateCard,
   pricingType, 
   onAdded 
 }) {
   const { post } = useApi();
   const isFixed = pricingType === 'Fixed';
   
+  // Calculate initial min_calls based on existing tiers
+  const initialMinCalls = useMemo(() => {
+    if (!rateCard || !rateCard.tiers || rateCard.tiers.length === 0) {
+      return '0';
+    }
+    
+    // Filter non-archived tiers and find the one with highest max_calls
+    const nonArchivedTiers = rateCard.tiers.filter(t => !t.is_archived);
+    if (nonArchivedTiers.length === 0) {
+      return '0';
+    }
+    
+    const sorted = [...nonArchivedTiers].sort((a, b) => {
+      const aMax = Number(a.max_calls ?? 0);
+      const bMax = Number(b.max_calls ?? 0);
+      return bMax - aMax; // descending to get highest
+    });
+    
+    const lastTier = sorted[0];
+    const lastMaxCalls = Number(lastTier.max_calls ?? 0);
+    return String(lastMaxCalls + 1);
+  }, [rateCard]);
+  
   // For fixed pricing, only allow one tier with 0-∞
   const initialRow = isFixed 
     ? { min_calls: '0', max_calls: '∞', infinite: true, unit_price: '' }
-    : { min_calls: '0', max_calls: '', infinite: false, unit_price: '' };
+    : { min_calls: initialMinCalls, max_calls: '', infinite: false, unit_price: '' };
   
   const [rows, setRows] = useState([initialRow]);
   const [error, setError] = useState(null);
